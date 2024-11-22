@@ -163,12 +163,13 @@ add_executable(fish_tank
         src/fish_tank/object.cpp
         src/fish_tank/scene.cpp
         src/fish_tank/camera.cpp
-        src/fish_tank/asteroid.cpp
+        src/fish_tank/table.cpp
         src/fish_tank/generator.cpp
         src/fish_tank/player.cpp
         src/fish_tank/projectile.cpp
         src/fish_tank/explosion.cpp
-        src/fish_tank/space.cpp)
+        src/fish_tank/space.cpp
+)
 target_link_libraries(fish_tank ppgso shaders)
 install(TARGETS fish_tank DESTINATION .)
 add_custom_command(TARGET fish_tank POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/data/ ${CMAKE_CURRENT_BINARY_DIR})

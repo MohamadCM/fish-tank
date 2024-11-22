@@ -12,6 +12,7 @@
 
 #include <ppgso/ppgso.h>
 
+#include "table.h"
 #include "camera.h"
 #include "scene.h"
 #include "generator.h"
@@ -21,7 +22,7 @@
 const unsigned int SIZE = 512;
 
 /*!
- * Custom windows for our simple game
+ * Custom window for our simple game
  */
 class SceneWindow : public ppgso::Window {
 private:
@@ -38,20 +39,25 @@ private:
     // Create a camera
     auto camera = std::make_unique<Camera>(60.0f, 1.0f, 0.1f, 100.0f);
     camera->position.z = -15.0f;
-    scene.camera = move(camera);
+    scene.camera = std::move(camera);
 
     // Add space background
-    scene.objects.push_back(std::make_unique<Space>());
+    // scene.objects.push_back(std::make_unique<Space>());
 
     // Add generator to scene
-    auto generator = std::make_unique<Generator>();
-    generator->position.y = 10.0f;
-    scene.objects.push_back(move(generator));
+    // auto generator = std::make_unique<Generator>();
+    // generator->position.y = 10.0f;
+    // scene.objects.push_back(std::move(generator));
 
     // Add player to the scene
-    auto player = std::make_unique<Player>();
-    player->position.y = -6;
-    scene.objects.push_back(move(player));
+    // auto player = std::make_unique<Player>();
+    // player->position.y = -6;
+    // scene.objects.push_back(std::move(player));
+
+    // Add table to the scene
+    auto table = std::make_unique<Table>();
+    table->position = {0.0f, -0.5f, 0.0f};
+    scene.objects.push_back(std::move(table));
   }
 
 public:
@@ -59,7 +65,8 @@ public:
    * Construct custom game window
    */
   SceneWindow() : Window{"gl9_scene", SIZE, SIZE} {
-    //hideCursor();
+    // Hide cursor if needed
+    // hideCursor();
     glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
 
     // Initialize OpenGL state
@@ -109,7 +116,7 @@ public:
   /*!
    * Handle cursor buttons
    * @param button Mouse button being manipulated
-   * @param action Mouse bu
+   * @param action Mouse button state
    * @param mods
    */
   void onMouseButton(int button, int action, int mods) override {
@@ -117,9 +124,9 @@ public:
       scene.cursor.left = action == GLFW_PRESS;
 
       if (scene.cursor.left) {
-        // Convert pixel coordinates to Screen coordinates
+        // Convert pixel coordinates to screen coordinates
         double u = (scene.cursor.x / width - 0.5f) * 2.0f;
-        double v = - (scene.cursor.y / height - 0.5f) * 2.0f;
+        double v = -(scene.cursor.y / height - 0.5f) * 2.0f;
 
         // Get mouse pick vector in world coordinates
         auto direction = scene.camera->cast(u, v);
