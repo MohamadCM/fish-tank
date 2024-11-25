@@ -12,6 +12,7 @@
 
 #include <ppgso/ppgso.h>
 
+#include "background.h"
 #include "table.h"
 #include "camera.h"
 #include "scene.h"
@@ -49,8 +50,8 @@ private:
     scene.camera = std::move(camera);
 
     // Add space background
-    scene.objects.push_back(std::make_unique<Space>());
-
+    auto background = std::make_unique<Background>();
+    scene.objects.push_back(std::move(background));
     // Add generator to scene
     // auto generator = std::make_unique<Generator>();
     // generator->position.y = 10.0f;
