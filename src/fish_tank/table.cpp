@@ -43,16 +43,16 @@ bool Table::update(Scene &scene, float dt) {
     // Ignore self in scene
     if (obj.get() == this) continue;
 
-    // We only need to collide with asteroids and projectiles, ignore other objects
-    auto asteroid = dynamic_cast<Table*>(obj.get()); // dynamic_pointer_cast<Asteroid>(obj);
+    // We only need to collide with tables and projectiles, ignore other objects
+    auto table = dynamic_cast<Table*>(obj.get()); // dynamic_pointer_cast<table>(obj);
     auto projectile = dynamic_cast<Projectile*>(obj.get()); //dynamic_pointer_cast<Projectile>(obj);
-    if (!asteroid && !projectile) continue;
+    if (!table && !projectile) continue;
 
-    // When colliding with other asteroids make sure the object is older than .5s
-    // This prevents excessive collisions when asteroids explode.
-    if (asteroid && age < 0.5f) continue;
+    // When colliding with other tables make sure the object is older than .5s
+    // This prevents excessive collisions when tables explode.
+    if (table && age < 0.5f) continue;
 
-    // Compare distance to approximate size of the asteroid estimated from scale.
+    // Compare distance to approximate size of the table estimated from scale.
     if (distance(position, obj->position) < (obj->scale.y + scale.y) * 0.7f) {
       int pieces = 3;
 
@@ -62,7 +62,7 @@ bool Table::update(Scene &scene, float dt) {
       // The projectile will be destroyed
       if (projectile) projectile->destroy();
 
-      // Generate smaller asteroids
+      // Generate smaller tables
       explode(scene, (obj->position + position) / 2.0f, (obj->scale + scale) / 2.0f, pieces);
 
       // Destroy self
@@ -84,15 +84,15 @@ void Table::explode(Scene &scene, glm::vec3 explosionPosition, glm::vec3 explosi
   explosion->speed = speed / 2.0f;
   scene.objects.push_back(move(explosion));
 
-  // Generate smaller asteroids
+  // Generate smaller tables
   for (int i = 0; i < pieces; i++) {
-    auto asteroid = std::make_unique<Table>();
-    asteroid->speed = speed + glm::vec3(glm::linearRand(-3.0f, 3.0f), glm::linearRand(0.0f, -5.0f), 0.0f);;
-    asteroid->position = position;
-    asteroid->rotMomentum = rotMomentum;
+    auto table = std::make_unique<Table>();
+    table->speed = speed + glm::vec3(glm::linearRand(-3.0f, 3.0f), glm::linearRand(0.0f, -5.0f), 0.0f);;
+    table->position = position;
+    table->rotMomentum = rotMomentum;
     float factor = (float) pieces / 2.0f;
-    asteroid->scale = scale / factor;
-    scene.objects.push_back(move(asteroid));
+    table->scale = scale / factor;
+    scene.objects.push_back(move(table));
   }
 }
 
@@ -113,8 +113,8 @@ void Table::render(Scene &scene) {
 }
 
 void Table::onClick(Scene &scene) {
-  std::cout << "Asteroid clicked!" << std::endl;
-  explode(scene, position, {10.0f, 10.0f, 10.0f}, 0 );
-  age = 10000;
+  // std::cout << "table clicked!" << std::endl;
+  // explode(scene, position, {10.0f, 10.0f, 10.0f}, 0 );
+  // age = 10000;
 }
 

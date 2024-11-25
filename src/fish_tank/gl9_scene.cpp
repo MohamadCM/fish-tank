@@ -19,7 +19,7 @@
 #include "player.h"
 #include "space.h"
 
-const unsigned int SIZE = 512;
+const unsigned int SIZE = 1024;
 
 /*!
  * Custom window for our simple game
@@ -36,13 +36,20 @@ private:
   void initScene() {
     scene.objects.clear();
 
+    scene.lightDirection = {0.5f, -1.0f, 0.5f};
     // Create a camera
+    // auto camera = std::make_unique<Camera>(60.0f, 1.0f, 0.1f, 100.0f);
+    // camera->position.z = 5.0f;
+    // scene.camera = std::move(camera);
+
     auto camera = std::make_unique<Camera>(60.0f, 1.0f, 0.1f, 100.0f);
-    camera->position.z = -15.0f;
+    camera->position = {10.0f, -10.0f, 10.0f};      // Set the camera position
+    camera->back = glm::normalize(camera->position - glm::vec3{0.0f, 0.0f, 0.0f}); // Set the "back" vector to look at (0,0,0)
+    camera->update(); // Ensure the view matrix is updated
     scene.camera = std::move(camera);
 
     // Add space background
-    // scene.objects.push_back(std::make_unique<Space>());
+    scene.objects.push_back(std::make_unique<Space>());
 
     // Add generator to scene
     // auto generator = std::make_unique<Generator>();
@@ -56,7 +63,10 @@ private:
 
     // Add table to the scene
     auto table = std::make_unique<Table>();
-    table->position = {0.0f, -0.5f, 0.0f};
+    table->position = {0.0f, 0.0f, 0.0f};
+    // table->rotation = {0.0f, 0.0f, 0.0f};
+    table->rotation.z = glm::radians(45.0f); // Rotate 90 degrees around the X-axis to make it upright
+    table->rotation.x = glm::radians(-15.0f); // Rotate 90 degrees around the X-axis to make it upright
     scene.objects.push_back(std::move(table));
   }
 
