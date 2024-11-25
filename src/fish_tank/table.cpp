@@ -13,8 +13,8 @@ std::unique_ptr<ppgso::Texture> Table::texture;
 std::unique_ptr<ppgso::Shader> Table::shader;
 
 Table::Table() {
-  // Set random scale speed and rotation
-  scale *= glm::linearRand(1.0f, 3.0f);
+  // Set  scale, speed, and rotation
+  scale = glm::vec3(5.0f, 5.0f, 5.0f); // This is the default scale, which makes the object 1x in size.
   speed = {glm::linearRand(-2.0f, 2.0f), glm::linearRand(-5.0f, -10.0f), 0.0f};
   // rotation = glm::ballRand(ppgso::PI);
   // rotMomentum = glm::ballRand(ppgso::PI);
@@ -117,4 +117,3 @@ void Table::onClick(Scene &scene) {
   // explode(scene, position, {10.0f, 10.0f, 10.0f}, 0 );
   // age = 10000;
 }
-

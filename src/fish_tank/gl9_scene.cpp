@@ -37,7 +37,7 @@ private:
   void initScene() {
     scene.objects.clear();
 
-    scene.lightDirection = {0.5f, -1.0f, 0.5f};
+    scene.lightDirection = {0.0f, 0.0f, 1.5f};
     // Create a camera
     // auto camera = std::make_unique<Camera>(60.0f, 1.0f, 0.1f, 100.0f);
     // camera->position.z = 5.0f;
@@ -64,10 +64,11 @@ private:
 
     // Add table to the scene
     auto table = std::make_unique<Table>();
-    table->position = {0.0f, 0.0f, 0.0f};
-    // table->rotation = {0.0f, 0.0f, 0.0f};
-    table->rotation.z = glm::radians(45.0f); // Rotate 90 degrees around the X-axis to make it upright
-    table->rotation.x = glm::radians(-15.0f); // Rotate 90 degrees around the X-axis to make it upright
+    table->position = {-10.0f, -3.0f, -10.0f};
+    table->rotation.z = glm::radians(45.0f); // Rotate 90 degrees around the Z-axis to make it upright
+    table->rotation.x = glm::radians(-45.0f); // Rotate 90 degrees around the Z-axis to make it upright
+    // table->rotation.y = glm::radians(45.0f); // Rotate 90 degrees around the X-axis to make it upright
+    // table->rotation.x = glm::radians(-15.0f); // Rotate 90 degrees around the X-axis to make it upright
     scene.objects.push_back(std::move(table));
   }
 
