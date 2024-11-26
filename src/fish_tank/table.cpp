@@ -3,6 +3,8 @@
 // #include "projectile.h"
 // #include "explosion.h"
 
+#include <shaders/advanced_material_vert_glsl.h>
+#include <shaders/advanced_material_frag_glsl.h>
 #include <shaders/diffuse_vert_glsl.h>
 #include <shaders/diffuse_frag_glsl.h>
 
@@ -92,6 +94,7 @@ void Table::render(Scene &scene) {
 
   // render mesh
   shader->setUniform("ModelMatrix", modelMatrix);
+
   shader->setUniform("Texture", *texture);
   mesh->render();
 }

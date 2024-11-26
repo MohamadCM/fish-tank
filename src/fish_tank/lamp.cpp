@@ -58,6 +58,8 @@ void Lamp::render(Scene &scene) {
     // Set the model transformation matrix
     shader->setUniform("ModelMatrix", modelMatrix);
 
+    shader->setUniform("UseSimpleTexture", false);
+
     shader->setUniform("MetallicRoughnessTexture", *metallicRoughness);
     shader->setUniform("NormalMapTexture", *normalMap);
     shader->setUniform("BaseColorTexture", *baseColor);

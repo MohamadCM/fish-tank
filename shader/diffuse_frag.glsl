@@ -1,31 +1,46 @@
 #version 330
-// A texture is expected as program attribute
+
+// Uniforms
 uniform sampler2D Texture;
-
-// Direction of light
 uniform vec3 LightDirection;
-
-// (optional) Transparency
+uniform vec3 LightPosition; // Point light position
+uniform vec3 LightColor;    // Point light color
+uniform vec3 CameraPosition; // Camera position for specular calculations
 uniform float Transparency;
-
-// (optional) Texture offset
 uniform vec2 TextureOffset;
 
-// The vertex shader will feed this input
+// Inputs from vertex shader
 in vec2 texCoord;
+in vec3 FragPosition;
+in vec3 FragNormal;
 
-// Wordspace normal passed from vertex shader
-in vec4 normal;
-
-// The final color
+// Output color
 out vec4 FragmentColor;
 
 void main() {
-  // Compute diffuse lighting
-  float diffuse = max(dot(normal, vec4(normalize(LightDirection), 1.0f)), 0.0f);
+  // Normalize the inputs
+  vec3 norm = normalize(FragNormal);
 
-  // Lookup the color in Texture on coordinates given by texCoord
-  // NOTE: Texture coordinate is inverted vertically for compatibility with OBJ
-  FragmentColor = texture(Texture, vec2(texCoord.x, 1.0 - texCoord.y) + TextureOffset) * diffuse;
-  FragmentColor.a = Transparency;
+  // Compute diffuse lighting for directional light
+  float diffuseDir = max(dot(norm, -normalize(LightDirection)), 0.0);
+
+  // Compute point light contribution
+  vec3 lightDir = normalize(LightPosition - FragPosition);
+  float distance = length(LightPosition - FragPosition);
+  float attenuation = 1.0 / (distance * distance);
+  float diffusePoint = max(dot(norm, lightDir), 0.0) * attenuation;
+
+  // Compute specular reflection (Blinn-Phong)
+  vec3 viewDir = normalize(CameraPosition - FragPosition);
+  vec3 halfwayDir = normalize(lightDir + viewDir);
+  float specular = pow(max(dot(norm, halfwayDir), 0.0), 32.0) * attenuation;
+
+  // Sample the texture color
+  vec4 textureColor = texture(Texture, vec2(texCoord.x, 1.0 - texCoord.y) + TextureOffset);
+
+  // Combine lighting contributions
+  vec3 lighting = textureColor.rgb * (diffuseDir + diffusePoint * LightColor) + vec3(specular);
+
+  // Output the final color
+  FragmentColor = vec4(lighting, textureColor.a * Transparency);
 }

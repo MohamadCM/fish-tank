@@ -36,7 +36,7 @@ private:
     {
         scene.objects.clear();
 
-        scene.lightDirection = {0.0f, 0.0f, 1.5f};
+        scene.lightDirection = {-20.0f, 0.0f, 1.5f};
         // Create a camera
         // auto camera = std::make_unique<Camera>(60.0f, 1.0f, 0.1f, 100.0f);
         // camera->position.z = 5.0f;

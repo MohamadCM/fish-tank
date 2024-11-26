@@ -31,7 +31,7 @@ void Background::render(Scene &scene) {
     shader->setUniform("ModelMatrix", glm::mat4(1.0f)); // No transformations needed
 
     // Bind the texture
-    shader->setUniform("Texture", *texture);
+    shader->setUniform("BaseColorTexture", *texture);
 
     // Render the quad
     mesh->render();
