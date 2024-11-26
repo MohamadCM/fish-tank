@@ -16,6 +16,7 @@
 #include "table.h"
 #include "camera.h"
 #include "scene.h"
+#include "lamp.h"
 #include "generator.h"
 #include "player.h"
 #include "space.h"
@@ -25,169 +26,188 @@ const unsigned int SIZE = 1024;
 /*!
  * Custom window for our simple game
  */
-class SceneWindow : public ppgso::Window {
+class SceneWindow : public ppgso::Window
+{
 private:
-  Scene scene;
-  bool animate = true;
+    Scene scene;
+    bool animate = true;
 
-  /*!
-   * Reset and initialize the game scene
-   * Creating unique smart pointers to objects that are stored in the scene object list
-   */
-  void initScene() {
-    scene.objects.clear();
+    /*!
+     * Reset and initialize the game scene
+     * Creating unique smart pointers to objects that are stored in the scene object list
+     */
+    void initScene()
+    {
+        scene.objects.clear();
 
-    scene.lightDirection = {0.0f, 0.0f, 1.5f};
-    // Create a camera
-    // auto camera = std::make_unique<Camera>(60.0f, 1.0f, 0.1f, 100.0f);
-    // camera->position.z = 5.0f;
-    // scene.camera = std::move(camera);
+        scene.lightDirection = {0.0f, 0.0f, 1.5f};
+        // Create a camera
+        // auto camera = std::make_unique<Camera>(60.0f, 1.0f, 0.1f, 100.0f);
+        // camera->position.z = 5.0f;
+        // scene.camera = std::move(camera);
 
-    auto camera = std::make_unique<Camera>(60.0f, 1.0f, 0.1f, 100.0f);
-    camera->position = {10.0f, -10.0f, 10.0f};      // Set the camera position
-    camera->back = glm::normalize(camera->position - glm::vec3{0.0f, 0.0f, 0.0f}); // Set the "back" vector to look at (0,0,0)
-    camera->update(); // Ensure the view matrix is updated
-    scene.camera = std::move(camera);
+        auto camera = std::make_unique<Camera>(60.0f, 1.0f, 0.1f, 100.0f);
+        camera->position = {10.0f, -10.0f, 10.0f}; // Set the camera position
+        camera->back = glm::normalize(camera->position - glm::vec3{0.0f, 0.0f, 0.0f});
+        // Set the "back" vector to look at (0,0,0)
+        camera->update(); // Ensure the view matrix is updated
+        scene.camera = std::move(camera);
 
-    // Add space background
-    auto background = std::make_unique<Background>();
-    scene.objects.push_back(std::move(background));
-    // Add generator to scene
-    // auto generator = std::make_unique<Generator>();
-    // generator->position.y = 10.0f;
-    // scene.objects.push_back(std::move(generator));
+        // Add space background
+        auto background = std::make_unique<Background>();
+        scene.objects.push_back(std::move(background));
+        // Add generator to scene
+        // auto generator = std::make_unique<Generator>();
+        // generator->position.y = 10.0f;
+        // scene.objects.push_back(std::move(generator));
 
-    // Add player to the scene
-    // auto player = std::make_unique<Player>();
-    // player->position.y = -6;
-    // scene.objects.push_back(std::move(player));
+        // Add player to the scene
+        // auto player = std::make_unique<Player>();
+        // player->position.y = -6;
+        // scene.objects.push_back(std::move(player));
 
-    // Add table to the scene
-    auto table = std::make_unique<Table>();
-    table->position = {-10.0f, -3.0f, -10.0f};
-    table->rotation.z = glm::radians(45.0f); // Rotate 90 degrees around the Z-axis to make it upright
-    table->rotation.x = glm::radians(-45.0f); // Rotate 90 degrees around the Z-axis to make it upright
-    // table->rotation.y = glm::radians(45.0f); // Rotate 90 degrees around the X-axis to make it upright
-    // table->rotation.x = glm::radians(-15.0f); // Rotate 90 degrees around the X-axis to make it upright
-    scene.objects.push_back(std::move(table));
-  }
+        // Add table to the scene
+        auto table = std::make_unique<Table>();
+        table->position = {-10.0f, -3.0f, -10.0f};
+        table->rotation.z = glm::radians(45.0f); // Rotate 90 degrees around the Z-axis to make it upright
+        table->rotation.x = glm::radians(-45.0f); // Rotate 90 degrees around the X-axis to make it upright
+        scene.objects.push_back(std::move(table));
+
+        auto lamp = std::make_unique<Lamp>();
+        lamp->position = {-8.0f, 1.0f, -3.0f};
+        scene.objects.push_back(std::move(lamp));
+    }
 
 public:
-  /*!
-   * Construct custom game window
-   */
-  SceneWindow() : Window{"gl9_scene", SIZE, SIZE} {
-    // Hide cursor if needed
-    // hideCursor();
-    glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
+    /*!
+     * Construct custom game window
+     */
+    SceneWindow() : Window{"gl9_scene", SIZE, SIZE}
+    {
+        // Hide cursor if needed
+        // hideCursor();
+        glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
 
-    // Initialize OpenGL state
-    // Enable Z-buffer
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
+        // Initialize OpenGL state
+        // Enable Z-buffer
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LEQUAL);
 
-    // Enable polygon culling
-    glEnable(GL_CULL_FACE);
-    glFrontFace(GL_CCW);
-    glCullFace(GL_BACK);
+        // Enable polygon culling
+        glEnable(GL_CULL_FACE);
+        glFrontFace(GL_CCW);
+        glCullFace(GL_BACK);
 
-    initScene();
-  }
-
-  /*!
-   * Handles pressed key when the window is focused
-   * @param key Key code of the key being pressed/released
-   * @param scanCode Scan code of the key being pressed/released
-   * @param action Action indicating the key state change
-   * @param mods Additional modifiers to consider
-   */
-  void onKey(int key, int scanCode, int action, int mods) override {
-    scene.keyboard[key] = action;
-
-    // Reset
-    if (key == GLFW_KEY_R && action == GLFW_PRESS) {
-      initScene();
+        initScene();
     }
 
-    // Pause
-    if (key == GLFW_KEY_P && action == GLFW_PRESS) {
-      animate = !animate;
-    }
-  }
+    /*!
+     * Handles pressed key when the window is focused
+     * @param key Key code of the key being pressed/released
+     * @param scanCode Scan code of the key being pressed/released
+     * @param action Action indicating the key state change
+     * @param mods Additional modifiers to consider
+     */
+    void onKey(int key, int scanCode, int action, int mods) override
+    {
+        scene.keyboard[key] = action;
 
-  /*!
-   * Handle cursor position changes
-   * @param cursorX Mouse horizontal position in window coordinates
-   * @param cursorY Mouse vertical position in window coordinates
-   */
-  void onCursorPos(double cursorX, double cursorY) override {
-    scene.cursor.x = cursorX;
-    scene.cursor.y = cursorY;
-  }
-
-  /*!
-   * Handle cursor buttons
-   * @param button Mouse button being manipulated
-   * @param action Mouse button state
-   * @param mods
-   */
-  void onMouseButton(int button, int action, int mods) override {
-    if(button == GLFW_MOUSE_BUTTON_LEFT) {
-      scene.cursor.left = action == GLFW_PRESS;
-
-      if (scene.cursor.left) {
-        // Convert pixel coordinates to screen coordinates
-        double u = (scene.cursor.x / width - 0.5f) * 2.0f;
-        double v = -(scene.cursor.y / height - 0.5f) * 2.0f;
-
-        // Get mouse pick vector in world coordinates
-        auto direction = scene.camera->cast(u, v);
-        auto position = scene.camera->position;
-
-        // Get all objects in scene intersected by ray
-        auto picked = scene.intersect(position, direction);
-
-        // Go through all objects that have been picked
-        for (auto &obj: picked) {
-          // Pass on the click event
-          obj->onClick(scene);
+        // Reset
+        if (key == GLFW_KEY_R && action == GLFW_PRESS)
+        {
+            initScene();
         }
-      }
+
+        // Pause
+        if (key == GLFW_KEY_P && action == GLFW_PRESS)
+        {
+            animate = !animate;
+        }
     }
-    if(button == GLFW_MOUSE_BUTTON_RIGHT) {
-      scene.cursor.right = action == GLFW_PRESS;
+
+    /*!
+     * Handle cursor position changes
+     * @param cursorX Mouse horizontal position in window coordinates
+     * @param cursorY Mouse vertical position in window coordinates
+     */
+    void onCursorPos(double cursorX, double cursorY) override
+    {
+        scene.cursor.x = cursorX;
+        scene.cursor.y = cursorY;
     }
-  }
 
-  /*!
-   * Window update implementation that will be called automatically from pollEvents
-   */
-  void onIdle() override {
-    // Track time
-    static auto time = (float) glfwGetTime();
+    /*!
+     * Handle cursor buttons
+     * @param button Mouse button being manipulated
+     * @param action Mouse button state
+     * @param mods
+     */
+    void onMouseButton(int button, int action, int mods) override
+    {
+        if (button == GLFW_MOUSE_BUTTON_LEFT)
+        {
+            scene.cursor.left = action == GLFW_PRESS;
 
-    // Compute time delta
-    float dt = animate ? (float) glfwGetTime() - time : 0;
+            if (scene.cursor.left)
+            {
+                // Convert pixel coordinates to screen coordinates
+                double u = (scene.cursor.x / width - 0.5f) * 2.0f;
+                double v = -(scene.cursor.y / height - 0.5f) * 2.0f;
 
-    time = (float) glfwGetTime();
+                // Get mouse pick vector in world coordinates
+                auto direction = scene.camera->cast(u, v);
+                auto position = scene.camera->position;
 
-    // Set gray background
-    glClearColor(.5f, .5f, .5f, 0);
-    // Clear depth and color buffers
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                // Get all objects in scene intersected by ray
+                auto picked = scene.intersect(position, direction);
 
-    // Update and render all objects
-    scene.update(dt);
-    scene.render();
-  }
+                // Go through all objects that have been picked
+                for (auto& obj : picked)
+                {
+                    // Pass on the click event
+                    obj->onClick(scene);
+                }
+            }
+        }
+        if (button == GLFW_MOUSE_BUTTON_RIGHT)
+        {
+            scene.cursor.right = action == GLFW_PRESS;
+        }
+    }
+
+    /*!
+     * Window update implementation that will be called automatically from pollEvents
+     */
+    void onIdle() override
+    {
+        // Track time
+        static auto time = (float)glfwGetTime();
+
+        // Compute time delta
+        float dt = animate ? (float)glfwGetTime() - time : 0;
+
+        time = (float)glfwGetTime();
+
+        // Set gray background
+        glClearColor(.5f, .5f, .5f, 0);
+        // Clear depth and color buffers
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // Update and render all objects
+        scene.update(dt);
+        scene.render();
+    }
 };
 
-int main() {
-  // Initialize our window
-  SceneWindow window;
+int main()
+{
+    // Initialize our window
+    SceneWindow window;
 
-  // Main execution loop
-  while (window.pollEvents()) {}
+    // Main execution loop
+    while (window.pollEvents())
+    {
+    }
 
-  return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
