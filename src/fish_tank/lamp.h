@@ -21,6 +21,8 @@ private:
  static std::unique_ptr<ppgso::Texture> normalMap;
 
 public:
+ // Position of the light coming out of the lamp
+ glm::vec3 lightPosition;
  /*!
   * Create a new Lamp instance
   */

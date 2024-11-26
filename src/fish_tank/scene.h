@@ -4,6 +4,7 @@
 #include <memory>
 #include <map>
 #include <list>
+#include <vector>
 
 #include "object.h"
 #include "camera.h"
@@ -13,8 +14,9 @@
  * Objects are stored in a list of objects
  * Keyboard and Mouse states are stored in a map and struct
  */
-class Scene {
-  public:
+class Scene
+{
+public:
     /*!
      * Update all objects in the scene
      * @param time
@@ -32,24 +34,26 @@ class Scene {
      * @param direction - Direction to pick objects from
      * @return Objects - Vector of pointers to intersected objects
      */
-    std::vector<Object*> intersect(const glm::vec3 &position, const glm::vec3 &direction);
+    std::vector<Object*> intersect(const glm::vec3& position, const glm::vec3& direction);
 
     // Camera object
     std::unique_ptr<Camera> camera;
 
     // All objects to be rendered in scene
-    std::list< std::unique_ptr<Object> > objects;
+    std::list<std::unique_ptr<Object>> objects;
 
     // Keyboard state
-    std::map< int, int > keyboard;
+    std::map<int, int> keyboard;
 
-    // Lights, in this case using only simple directional diffuse lighting
+    // Lights: A list of light positions in the scene
     glm::vec3 lightDirection{-1.0f, -1.0f, -1.0f};
+    std::vector<glm::vec3> lightSources;
 
     // Store cursor state
-    struct {
-      double x, y;
-      bool left, right;
+    struct
+    {
+        double x, y;
+        bool left, right;
     } cursor;
 };
 

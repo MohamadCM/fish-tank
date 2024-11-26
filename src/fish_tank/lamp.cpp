@@ -16,7 +16,6 @@ std::unique_ptr<ppgso::Shader> Lamp::shader;
 std::unique_ptr<ppgso::Texture> Lamp::baseColor;
 std::unique_ptr<ppgso::Texture> Lamp::metallicRoughness;
 std::unique_ptr<ppgso::Texture> Lamp::normalMap;
-std::unique_ptr<ppgso::Texture> Lamp::texture;
 
 Lamp::Lamp() {
     if (!shader) shader = std::make_unique<ppgso::Shader>(advanced_material_vert_glsl, advanced_material_frag_glsl);
@@ -32,7 +31,13 @@ Lamp::Lamp() {
 }
 
 bool Lamp::update(Scene &scene, float dt) {
-    // Lamp is static; no updates needed
+    // Update the light position (top of the lamp)
+    lightPosition = position + glm::vec3(scale.x * 5.0f, -scale.y * 5.0f, scale.z * 5.0f); // Adjust Y-offset as per lamp's height.
+
+    // Add this lamp's light source to the scene
+    scene.lightSources.push_back(lightPosition);
+
+    // Generate model matrix
     generateModelMatrix();
     return true;
 }
@@ -44,6 +49,8 @@ void Lamp::render(Scene &scene) {
     // Set up light direction
     shader->setUniform("LightDirection", scene.lightDirection);
 
+    shader->setUniform("LightPosition", scene.lightSources.back());
+    shader->setUniform("LightColor", glm::vec3(1.0f, 1.0f, 0.9f)); // Warm light color
     // Set up camera matrices
     shader->setUniform("ProjectionMatrix", scene.camera->projectionMatrix);
     shader->setUniform("ViewMatrix", scene.camera->viewMatrix);

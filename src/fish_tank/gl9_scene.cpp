@@ -18,8 +18,8 @@
 #include "scene.h"
 #include "lamp.h"
 #include "generator.h"
-#include "player.h"
-#include "space.h"
+// #include "player.h"
+// #include "space.h"
 
 const unsigned int SIZE = 1024;
 
