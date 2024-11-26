@@ -1,39 +1,27 @@
-#pragma once
-
-const char* advanced_material_frag_glsl = R"(
 #version 330 core
 
-in vec2 FragTexCoord;
-in vec3 FragNormal;
-in vec3 FragPosition;
+layout(location = 0) in vec3 Position;
+layout(location = 1) in vec2 TexCoord;
+layout(location = 2) in vec3 Normal;
 
-uniform sampler2D BaseColorTexture;
-uniform sampler2D MetallicRoughnessTexture;
-uniform sampler2D NormalMapTexture;
+uniform mat4 ModelMatrix;
+uniform mat4 ViewMatrix;
+uniform mat4 ProjectionMatrix;
 
-uniform vec3 LightDirection;
-
-out vec4 FragColor;
+out vec2 FragTexCoord;
+out vec3 FragNormal;
+out vec3 FragPosition;
 
 void main() {
-    // Sample textures
-    vec3 baseColor = texture(BaseColorTexture, FragTexCoord).rgb;
-    vec2 metallicRoughness = texture(MetallicRoughnessTexture, FragTexCoord).rg;
-    vec3 normalMap = texture(NormalMapTexture, FragTexCoord).rgb;
+    // Pass texture coordinates to fragment shader
+    FragTexCoord = TexCoord;
 
-    // Transform normal map (convert from [0,1] to [-1,1])
-    vec3 normal = normalize(normalMap * 2.0 - 1.0);
+    // Transform normals to world space
+    FragNormal = mat3(transpose(inverse(ModelMatrix))) * Normal;
 
-    // Calculate lighting
-    float lightIntensity = max(dot(normal, -LightDirection), 0.0);
+    // Calculate position in world space
+    FragPosition = vec3(ModelMatrix * vec4(Position, 1.0));
 
-    // Calculate roughness and metallic properties
-    float roughness = metallicRoughness.g;
-    float metallic = metallicRoughness.r;
-
-    // Combine into final color
-    vec3 color = baseColor * lightIntensity * (1.0 - metallic) + baseColor * metallic;
-
-    FragColor = vec4(color, 1.0);
+    // Calculate final vertex position in clip space
+    gl_Position = ProjectionMatrix * ViewMatrix * vec4(FragPosition, 1.0);
 }
-)";

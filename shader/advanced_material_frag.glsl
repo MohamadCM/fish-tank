@@ -1,5 +1,5 @@
-const char* advanced_material_frag_glsl = R"(
 #version 330 core
+
 in vec2 FragTexCoord;
 in vec3 FragNormal;
 in vec3 FragPosition;
@@ -13,24 +13,26 @@ uniform vec3 LightDirection;
 out vec4 FragColor;
 
 void main() {
-    // Sample textures
+    // Sample base color texture
     vec3 baseColor = texture(BaseColorTexture, FragTexCoord).rgb;
-    vec2 metallicRoughness = texture(MetallicRoughnessTexture, FragTexCoord).rg;
-    vec3 normalMap = texture(NormalMapTexture, FragTexCoord).rgb;
 
-    // Transform normal map (convert from [0,1] to [-1,1])
+    // Sample metallic and roughness values
+    vec2 metallicRoughness = texture(MetallicRoughnessTexture, FragTexCoord).rg;
+
+    // Sample and transform the normal map (from [0,1] to [-1,1])
+    vec3 normalMap = texture(NormalMapTexture, FragTexCoord).rgb;
     vec3 normal = normalize(normalMap * 2.0 - 1.0);
 
-    // Calculate lighting
+    // Compute lighting (dot product between normal and light direction)
     float lightIntensity = max(dot(normal, -LightDirection), 0.0);
 
-    // Calculate roughness and metallic properties
-    float roughness = metallicRoughness.g;
+    // Separate metallic and roughness components
     float metallic = metallicRoughness.r;
+    float roughness = metallicRoughness.g;
 
-    // Combine into final color
+    // Combine lighting and material properties
     vec3 color = baseColor * lightIntensity * (1.0 - metallic) + baseColor * metallic;
 
+    // Output final fragment color
     FragColor = vec4(color, 1.0);
 }
-)";

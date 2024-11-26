@@ -20,9 +20,6 @@ private:
  static std::unique_ptr<ppgso::Texture> metallicRoughness;
  static std::unique_ptr<ppgso::Texture> normalMap;
 
-
- static std::unique_ptr<ppgso::Texture> texture;
-
 public:
  /*!
   * Create a new Lamp instance
