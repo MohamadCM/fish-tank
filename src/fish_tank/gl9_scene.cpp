@@ -17,11 +17,9 @@
 #include "camera.h"
 #include "scene.h"
 #include "lamp.h"
-#include "generator.h"
-// #include "player.h"
-// #include "space.h"
+// #include "aquarium.h"
 
-const unsigned int SIZE = 1024;
+const unsigned int SIZE = 768;
 
 /*!
  * Custom window for our simple game
@@ -30,8 +28,6 @@ class SceneWindow : public ppgso::Window
 {
 private:
     Scene scene;
-    bool animate = true;
-
     /*!
      * Reset and initialize the game scene
      * Creating unique smart pointers to objects that are stored in the scene object list
@@ -66,6 +62,10 @@ private:
         // player->position.y = -6;
         // scene.objects.push_back(std::move(player));
 
+        auto lamp = std::make_unique<Lamp>();
+        lamp->position = {-8.0f, 1.0f, -3.0f};
+        scene.objects.push_back(std::move(lamp));
+
         // Add table to the scene
         auto table = std::make_unique<Table>();
         table->position = {-10.0f, -3.0f, -10.0f};
@@ -73,10 +73,13 @@ private:
         table->rotation.x = glm::radians(-45.0f); // Rotate 90 degrees around the X-axis to make it upright
         scene.objects.push_back(std::move(table));
 
-        auto lamp = std::make_unique<Lamp>();
-        lamp->position = {-8.0f, 1.0f, -3.0f};
-        scene.objects.push_back(std::move(lamp));
+
+        // auto acquarium = std::make_unique<Aquarium>();
+        // lamp->position = {0.0f, 0.0f, 0.0f};
+        // scene.objects.push_back(std::move(lamp));
     }
+
+    bool animate = true;
 
 public:
     /*!

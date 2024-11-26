@@ -8,7 +8,7 @@ uniform sampler2D BaseColorTexture;
 uniform sampler2D MetallicRoughnessTexture;
 uniform sampler2D NormalMapTexture;
 
-// Directional light (already present)
+// Directional light
 uniform vec3 LightDirection;
 
 // Point light (lamp)

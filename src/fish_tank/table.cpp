@@ -1,7 +1,7 @@
 #include <glm/gtc/random.hpp>
 #include "table.h"
-#include "projectile.h"
-#include "explosion.h"
+// #include "projectile.h"
+// #include "explosion.h"
 
 #include <shaders/diffuse_vert_glsl.h>
 #include <shaders/diffuse_frag_glsl.h>
@@ -45,8 +45,8 @@ bool Table::update(Scene &scene, float dt) {
 
     // We only need to collide with tables and projectiles, ignore other objects
     auto table = dynamic_cast<Table*>(obj.get()); // dynamic_pointer_cast<table>(obj);
-    auto projectile = dynamic_cast<Projectile*>(obj.get()); //dynamic_pointer_cast<Projectile>(obj);
-    if (!table && !projectile) continue;
+    // auto projectile = dynamic_cast<Projectile*>(obj.get()); //dynamic_pointer_cast<Projectile>(obj);
+    // if (!table && !projectile) continue;
 
     // When colliding with other tables make sure the object is older than .5s
     // This prevents excessive collisions when tables explode.
@@ -60,10 +60,10 @@ bool Table::update(Scene &scene, float dt) {
       if (scale.y < 0.5) pieces = 0;
 
       // The projectile will be destroyed
-      if (projectile) projectile->destroy();
+      // if (projectile) projectile->destroy();
 
       // Generate smaller tables
-      explode(scene, (obj->position + position) / 2.0f, (obj->scale + scale) / 2.0f, pieces);
+      // explode(scene, (obj->position + position) / 2.0f, (obj->scale + scale) / 2.0f, pieces);
 
       // Destroy self
       return false;
@@ -76,31 +76,15 @@ bool Table::update(Scene &scene, float dt) {
   return true;
 }
 
-void Table::explode(Scene &scene, glm::vec3 explosionPosition, glm::vec3 explosionScale, int pieces) {
-  // Generate explosion
-  auto explosion = std::make_unique<Explosion>();
-  explosion->position = explosionPosition;
-  explosion->scale = explosionScale;
-  explosion->speed = speed / 2.0f;
-  scene.objects.push_back(move(explosion));
-
-  // Generate smaller tables
-  for (int i = 0; i < pieces; i++) {
-    auto table = std::make_unique<Table>();
-    table->speed = speed + glm::vec3(glm::linearRand(-3.0f, 3.0f), glm::linearRand(0.0f, -5.0f), 0.0f);;
-    table->position = position;
-    table->rotMomentum = rotMomentum;
-    float factor = (float) pieces / 2.0f;
-    table->scale = scale / factor;
-    scene.objects.push_back(move(table));
-  }
-}
 
 void Table::render(Scene &scene) {
   shader->use();
 
   // Set up light
   shader->setUniform("LightDirection", scene.lightDirection);
+
+  shader->setUniform("LightPosition", scene.lightSources.back());
+  shader->setUniform("LightColor", glm::vec3(1.0f, 1.0f, 0.9f)); // Warm light color
 
   // use camera
   shader->setUniform("ProjectionMatrix", scene.camera->projectionMatrix);

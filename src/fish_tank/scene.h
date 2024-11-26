@@ -14,47 +14,50 @@
  * Objects are stored in a list of objects
  * Keyboard and Mouse states are stored in a map and struct
  */
-class Scene
-{
+class Scene {
 public:
-    /*!
-     * Update all objects in the scene
-     * @param time
-     */
-    void update(float time);
+ /*!
+  * Update all objects in the scene
+  * @param time
+  */
+ void update(float time);
 
-    /*!
-     * Render all objects in the scene
-     */
-    void render();
+ /*!
+  * Render all objects in the scene
+  */
+ void render();
 
-    /*!
-     * Pick objects using a ray
-     * @param position - Position in the scene to pick object from
-     * @param direction - Direction to pick objects from
-     * @return Objects - Vector of pointers to intersected objects
-     */
-    std::vector<Object*> intersect(const glm::vec3& position, const glm::vec3& direction);
+ /*!
+  * Pick objects using a ray
+  * @param position - Position in the scene to pick object from
+  * @param direction - Direction to pick objects from
+  * @return Objects - Vector of pointers to intersected objects
+  */
+ std::vector<Object*> intersect(const glm::vec3 &position, const glm::vec3 &direction);
 
-    // Camera object
-    std::unique_ptr<Camera> camera;
+ // Camera object
+ std::unique_ptr<Camera> camera;
 
-    // All objects to be rendered in scene
-    std::list<std::unique_ptr<Object>> objects;
+ // All objects to be rendered in scene
+ std::list< std::unique_ptr<Object> > objects;
 
-    // Keyboard state
-    std::map<int, int> keyboard;
+ // Keyboard state
+ std::map< int, int > keyboard;
 
-    // Lights: A list of light positions in the scene
-    glm::vec3 lightDirection{-1.0f, -1.0f, -1.0f};
-    std::vector<glm::vec3> lightSources;
+ // Lights: A list of light positions in the scene
+ std::vector<glm::vec3> lightSources;
 
-    // Store cursor state
-    struct
-    {
-        double x, y;
-        bool left, right;
-    } cursor;
+ // Directional light (previous light direction)
+ glm::vec3 lightDirection{-1.0f, -1.0f, -1.0f};
+
+ // Ambient light color (new ambient light source)
+ glm::vec3 ambientLight{0.1f, 0.1f, 0.1f};  // Adjust the intensity of ambient light here
+
+ // Store cursor state
+ struct {
+  double x, y;
+  bool left, right;
+ } cursor;
 };
 
 #endif // _PPGSO_SCENE_H

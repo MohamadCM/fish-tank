@@ -166,15 +166,13 @@ add_executable(fish_tank
         src/fish_tank/scene.cpp
         src/fish_tank/camera.cpp
         src/fish_tank/table.cpp
-        src/fish_tank/generator.cpp
-        src/fish_tank/player.cpp
-        src/fish_tank/projectile.cpp
         src/fish_tank/explosion.cpp
-        src/fish_tank/space.cpp
         src/fish_tank/background.h
         src/fish_tank/background.cpp
         src/fish_tank/lamp.h
         src/fish_tank/lamp.cpp
+        src/fish_tank/aquarium.cpp
+        src/fish_tank/aquarium.h
 )
 target_link_libraries(fish_tank ppgso shaders)
 install(TARGETS fish_tank DESTINATION .)
