@@ -86,7 +86,7 @@ void Table::render(Scene &scene) {
   shader->setUniform("LightDirection", scene.lightDirection);
 
   shader->setUniform("LightPosition", scene.lightSources.back());
-  shader->setUniform("LightColor", glm::vec3(1.0f, 1.0f, 0.9f)); // Warm light color
+  // shader->setUniform("LightColor", glm::vec3(1.0f, 0.5f, 0.5f));
 
   // use camera
   shader->setUniform("ProjectionMatrix", scene.camera->projectionMatrix);

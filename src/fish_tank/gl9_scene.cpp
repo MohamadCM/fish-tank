@@ -49,18 +49,9 @@ private:
         camera->update(); // Ensure the view matrix is updated
         scene.camera = std::move(camera);
 
-        // Add space background
+        // Add room background
         auto background = std::make_unique<Background>();
         scene.objects.push_back(std::move(background));
-        // Add generator to scene
-        // auto generator = std::make_unique<Generator>();
-        // generator->position.y = 10.0f;
-        // scene.objects.push_back(std::move(generator));
-
-        // Add player to the scene
-        // auto player = std::make_unique<Player>();
-        // player->position.y = -6;
-        // scene.objects.push_back(std::move(player));
 
         auto lamp = std::make_unique<Lamp>();
         lamp->position = {-8.0f, 1.0f, -3.0f};
