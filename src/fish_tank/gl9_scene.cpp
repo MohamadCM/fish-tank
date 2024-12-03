@@ -38,10 +38,6 @@ private:
 
         scene.lightDirection = {-20.0f, 0.0f, 1.5f};
         // Create a camera
-        // auto camera = std::make_unique<Camera>(60.0f, 1.0f, 0.1f, 100.0f);
-        // camera->position.z = 5.0f;
-        // scene.camera = std::move(camera);
-
         auto camera = std::make_unique<Camera>(60.0f, 1.0f, 0.1f, 100.0f);
         camera->position = {10.0f, -10.0f, 10.0f}; // Set the camera position
         camera->back = glm::normalize(camera->position - glm::vec3{0.0f, 0.0f, 0.0f});
