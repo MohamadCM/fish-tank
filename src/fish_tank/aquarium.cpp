@@ -29,6 +29,7 @@ void Aquarium::render(Scene &scene) {
 
     // Set light uniforms
     shader->setUniform("LightDirection", scene.lightDirection);
+    shader->setUniform("LightPosition", scene.lightSources.back());
 
     // Set camera matrices
     shader->setUniform("ProjectionMatrix", scene.camera->projectionMatrix);
