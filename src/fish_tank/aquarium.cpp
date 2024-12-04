@@ -16,7 +16,7 @@ Aquarium::Aquarium() {
     if (!shader) shader = std::make_unique<ppgso::Shader>(diffuse_vert_glsl, diffuse_frag_glsl);
     if (!mesh) mesh = std::make_unique<ppgso::Mesh>("aquarium.gltf");
     if (!texture) texture = std::make_unique<ppgso::Texture>(ppgso::image::loadBMP("textures/glass.bmp"));
-    scale = glm::vec3(0.45f, 0.45f, 0.45f);
+    scale = glm::vec3(0.7f, 0.7f, 0.7f);
 }
 
 bool Aquarium::update(Scene &scene, float dt) {
