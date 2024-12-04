@@ -16,7 +16,7 @@ private:
     // Static resources shared across instances
     static std::unique_ptr<ppgso::Mesh> mesh;
     static std::unique_ptr<ppgso::Shader> shader;
-    static std::vector<std::unique_ptr<ppgso::Texture>> textures;
+    static std::unique_ptr<ppgso::Texture> texture;
 
 public:
     /*!

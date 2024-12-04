@@ -17,7 +17,7 @@
 #include "camera.h"
 #include "scene.h"
 #include "lamp.h"
-// #include "aquarium.h"
+#include "aquarium.h"
 
 const unsigned int SIZE = 768;
 
@@ -56,14 +56,17 @@ private:
         // Add table to the scene
         auto table = std::make_unique<Table>();
         table->position = {-10.0f, -3.0f, -10.0f};
-        table->rotation.z = glm::radians(45.0f); // Rotate 90 degrees around the Z-axis to make it upright
-        table->rotation.x = glm::radians(-45.0f); // Rotate 90 degrees around the X-axis to make it upright
+        table->rotation.z = glm::radians(45.0f);
+        table->rotation.x = glm::radians(-45.0f);
         scene.objects.push_back(std::move(table));
 
 
-        // auto acquarium = std::make_unique<Aquarium>();
-        // lamp->position = {0.0f, 0.0f, 0.0f};
-        // scene.objects.push_back(std::move(lamp));
+        auto aquarium = std::make_unique<Aquarium>();
+        aquarium->rotation.z = glm::radians(45.0f);
+        aquarium->rotation.x = glm::radians(-45.0f);
+        aquarium->rotation.y = glm::radians(90.0f);
+        aquarium->position = {-5.0f, 2.5f, -2.5f};
+        scene.objects.push_back(std::move(aquarium));
     }
 
     bool animate = true;

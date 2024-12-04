@@ -9,22 +9,14 @@
 // Static resources
 std::unique_ptr<ppgso::Mesh> Aquarium::mesh;
 std::unique_ptr<ppgso::Shader> Aquarium::shader;
-std::vector<std::unique_ptr<ppgso::Texture>> Aquarium::textures;
+std::unique_ptr<ppgso::Texture> Aquarium::texture;
 
 Aquarium::Aquarium() {
     // Load shared resources if not already loaded
     if (!shader) shader = std::make_unique<ppgso::Shader>(diffuse_vert_glsl, diffuse_frag_glsl);
-
-    if (!mesh) mesh = std::make_unique<ppgso::Mesh>("acquarium.gltf"); // Ensure the .gltf file is in the correct path
-
-    if (textures.empty()) {
-        textures.push_back(std::make_unique<ppgso::Texture>(ppgso::image::loadBMP("Aquarium_baseColor.bmp")));
-        // textures.push_back(std::make_unique<ppgso::Texture>(ppgso::image::loadBMP("Aquarium_emissive.bmp")));
-        // textures.push_back(std::make_unique<ppgso::Texture>(ppgso::image::loadBMP("Aquarium_metallicRoughness.bmp")));
-        // textures.push_back(std::make_unique<ppgso::Texture>(ppgso::image::loadBMP("Dirt_baseColor.bmp")));
-        // textures.push_back(std::make_unique<ppgso::Texture>(ppgso::image::loadBMP("Dirt_metallicRoughness.bmp")));
-        // textures.push_back(std::make_unique<ppgso::Texture>(ppgso::image::loadBMP("Dirt_normal.bmp")));
-    }
+    if (!mesh) mesh = std::make_unique<ppgso::Mesh>("aquarium.gltf");
+    if (!texture) texture = std::make_unique<ppgso::Texture>(ppgso::image::loadBMP("textures/glass.bmp"));
+    scale = glm::vec3(0.45f, 0.45f, 0.45f);
 }
 
 bool Aquarium::update(Scene &scene, float dt) {
@@ -44,7 +36,7 @@ void Aquarium::render(Scene &scene) {
     shader->setUniform("ModelMatrix", modelMatrix);
 
     // Bind textures (example for base color)
-    shader->setUniform("BaseColorTexture", *textures[0]);
+  shader->setUniform("Texture", *texture);
     // Bind additional textures as needed (e.g., normal map, metallic map)
 
     // Render the mesh
