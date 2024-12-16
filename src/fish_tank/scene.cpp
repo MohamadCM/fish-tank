@@ -44,7 +44,7 @@ void Scene::update(float time)
             ++i;
     }
 
-    if (sceneIndex >= 1)
+    if (sceneIndex == 1)
     {
         bubbleTimer += time;
         if (bubbleTimer > glm::linearRand(0.5f, 5.0f))

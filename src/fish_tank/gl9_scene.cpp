@@ -83,10 +83,7 @@ private:
     // Implementation of the second scene objects
     void createSecondScene()
     {
-        scene.camera->position = scene.initialCameraPosition; // Set the camera position
-        scene.camera->back = glm::normalize(scene.camera->position - glm::vec3{0.0f, 0.0f, 0.0f});
-        scene.camera->update(); // Ensure the view matrix is updated
-
+        initScene();
         // Add room background
         auto background = std::make_unique<WaterBackground>();
         scene.objects.push_back(std::move(background));
