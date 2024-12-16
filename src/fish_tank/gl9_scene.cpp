@@ -1,11 +1,3 @@
-// Example gl_scene
-// - Introduces the concept of a dynamic scene of objects
-// - Uses abstract object interface for Update and Render steps
-// - Creates a simple game scene with Player, Asteroid and Space objects
-// - Contains a generator object that does not render but adds Asteroids to the scene
-// - Some objects use shared resources and all object deallocations are handled automatically
-// - Controls: LEFT, RIGHT, "R" to reset, SPACE to fire
-
 #include <iostream>
 #include <map>
 #include <list>
@@ -18,13 +10,15 @@
 #include "scene.h"
 #include "lamp.h"
 #include "aquarium.h"
+#include "WaterBackground.h"
 
 const unsigned int SIZE = 768;
 
 /*!
  * Custom window for our simple game
  */
-class SceneWindow : public ppgso::Window {
+class SceneWindow : public ppgso::Window
+{
 private:
     Scene scene;
 
@@ -32,7 +26,8 @@ private:
      * Reset and initialize the first scene
      * Creating unique smart pointers to objects that are stored in the scene object list
      */
-    void initScene() {
+    void initScene()
+    {
         scene.objects.clear();
 
         // Light Direction
@@ -45,6 +40,14 @@ private:
         camera->update(); // Ensure the view matrix is updated
         scene.camera = std::move(camera);
 
+        scene.transitionToNextScene = false;
+        scene.transitionProgress = 0.0f;
+        scene.nextSceneTriggered = false;
+    }
+
+    // Implementation of the first scene objects
+    void createFirstScene()
+    {
         // Add room background
         auto background = std::make_unique<RoomBackground>();
         scene.objects.push_back(std::move(background));
@@ -70,12 +73,17 @@ private:
         scene.objects.push_back(std::move(aquarium));
 
         // Initialize camera transition variables
-        scene.initialCameraPosition = scene.camera->position;  // Starting position
+        scene.initialCameraPosition = scene.camera->position; // Starting position
         // {10.0f, -10.0f, 10.0f}
-        scene.targetCameraPosition = {0.5f, 0.0f, -0.0f};      // Near the aquarium
-        scene.transitionToNextScene = false;
-        scene.transitionProgress = 0.0f;
-        scene.nextSceneTriggered = false;
+        scene.targetCameraPosition = {0.5f, 0.0f, -0.0f}; // Near the aquarium
+    }
+
+    // Implementation of the second scene objects
+    void createSecondScene()
+    {
+        // Add water background
+        auto background = std::make_unique<WaterBackground>();
+        scene.objects.push_back(std::move(background));
     }
 
     bool animate = true;
@@ -84,7 +92,8 @@ public:
     /*!
      * Construct custom scene window
      */
-    SceneWindow() : Window{"gl9_scene", SIZE, SIZE} {
+    SceneWindow() : Window{"gl9_scene", SIZE, SIZE}
+    {
         // Hide cursor if needed
         // hideCursor();
         glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
@@ -97,6 +106,7 @@ public:
         glCullFace(GL_BACK);
 
         initScene();
+        createFirstScene();
     }
 
     /*!
@@ -106,21 +116,25 @@ public:
      * @param action Action indicating the key state change
      * @param mods Additional modifiers to consider
      */
-    void onKey(int key, int scanCode, int action, int mods) override {
+    void onKey(int key, int scanCode, int action, int mods) override
+    {
         scene.keyboard[key] = action;
 
         // Reset
-        if (key == GLFW_KEY_R && action == GLFW_PRESS) {
+        if (key == GLFW_KEY_R && action == GLFW_PRESS)
+        {
             initScene();
         }
 
         // Pause
-        if (key == GLFW_KEY_P && action == GLFW_PRESS) {
+        if (key == GLFW_KEY_P && action == GLFW_PRESS)
+        {
             animate = !animate;
         }
 
         // Start camera transition and switch scene
-        if (key == GLFW_KEY_SPACE && action == GLFW_PRESS && !scene.transitionToNextScene) {
+        if (key == GLFW_KEY_SPACE && action == GLFW_PRESS && !scene.transitionToNextScene)
+        {
             scene.transitionToNextScene = true; // Start the transition
         }
     }
@@ -130,7 +144,8 @@ public:
      * @param cursorX Mouse horizontal position in window coordinates
      * @param cursorY Mouse vertical position in window coordinates
      */
-    void onCursorPos(double cursorX, double cursorY) override {
+    void onCursorPos(double cursorX, double cursorY) override
+    {
         scene.cursor.x = cursorX;
         scene.cursor.y = cursorY;
     }
@@ -141,11 +156,14 @@ public:
      * @param action Mouse button state
      * @param mods
      */
-    void onMouseButton(int button, int action, int mods) override {
-        if (button == GLFW_MOUSE_BUTTON_LEFT) {
+    void onMouseButton(int button, int action, int mods) override
+    {
+        if (button == GLFW_MOUSE_BUTTON_LEFT)
+        {
             scene.cursor.left = action == GLFW_PRESS;
 
-            if (scene.cursor.left) {
+            if (scene.cursor.left)
+            {
                 // Convert pixel coordinates to screen coordinates
                 double u = (scene.cursor.x / width - 0.5f) * 2.0f;
                 double v = -(scene.cursor.y / height - 0.5f) * 2.0f;
@@ -158,13 +176,15 @@ public:
                 auto picked = scene.intersect(position, direction);
 
                 // Go through all objects that have been picked
-                for (auto& obj : picked) {
+                for (auto& obj : picked)
+                {
                     // Pass on the click event
                     obj->onClick(scene);
                 }
             }
         }
-        if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+        if (button == GLFW_MOUSE_BUTTON_RIGHT)
+        {
             scene.cursor.right = action == GLFW_PRESS;
         }
     }
@@ -172,7 +192,8 @@ public:
     /*!
      * Window update implementation that will be called automatically from pollEvents
      */
-    void onIdle() override {
+    void onIdle() override
+    {
         // Track time
         static auto time = (float)glfwGetTime();
 
@@ -187,6 +208,11 @@ public:
 
         // Update and render all objects
         scene.update(dt);
+        if (scene.nextSceneTriggered)
+        {
+            createSecondScene();
+        }
+
         scene.render();
     }
 };
