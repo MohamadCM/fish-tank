@@ -175,6 +175,8 @@ add_executable(fish_tank
         src/fish_tank/aquarium.h
         src/fish_tank/WaterBackground.h
         src/fish_tank/WaterBackground.cpp
+        src/fish_tank/FishType1.h
+        src/fish_tank/FishType1.cpp
 )
 target_link_libraries(fish_tank ppgso shaders)
 install(TARGETS fish_tank DESTINATION .)

@@ -10,6 +10,7 @@
 #include "scene.h"
 #include "lamp.h"
 #include "aquarium.h"
+#include "FishType1.h"
 #include "WaterBackground.h"
 
 const unsigned int SIZE = 768;
@@ -81,9 +82,13 @@ private:
     // Implementation of the second scene objects
     void createSecondScene()
     {
-        // Add water background
+        // Add room background
         auto background = std::make_unique<WaterBackground>();
         scene.objects.push_back(std::move(background));
+
+            auto fish = std::make_unique<FishType1>();
+            fish->position = {-10.0f, -3.0f, -10.0f}; // Place the fish in the aquarium
+            scene.objects.push_back(std::move(fish));
     }
 
     bool animate = true;
@@ -106,6 +111,7 @@ public:
         glCullFace(GL_BACK);
 
         initScene();
+
         createFirstScene();
     }
 
