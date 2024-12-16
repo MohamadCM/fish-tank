@@ -5,6 +5,7 @@
 #include <map>
 #include <list>
 #include <vector>
+#include <glm/glm.hpp>
 
 #include "object.h"
 #include "camera.h"
@@ -35,29 +36,41 @@ public:
   */
  std::vector<Object*> intersect(const glm::vec3 &position, const glm::vec3 &direction);
 
+ /*!
+  * Switch to the next scene. Clears current objects and loads new ones.
+  */
+ void switchToNextScene();
+
  // Camera object
  std::unique_ptr<Camera> camera;
 
  // All objects to be rendered in scene
- std::list< std::unique_ptr<Object> > objects;
+ std::list<std::unique_ptr<Object>> objects;
 
  // Keyboard state
- std::map< int, int > keyboard;
+ std::map<int, int> keyboard;
 
  // Lights: A list of light positions in the scene
  std::vector<glm::vec3> lightSources;
 
- // Directional light (previous light direction)
+ // Directional light
  glm::vec3 lightDirection{-1.0f, -1.0f, -1.0f};
 
- // Ambient light color (new ambient light source)
- glm::vec3 ambientLight{0.1f, 0.1f, 0.1f};  // Adjust the intensity of ambient light here
+ // Ambient light color
+ glm::vec3 ambientLight{0.1f, 0.1f, 0.1f};
 
- // Store cursor state
+ // Cursor state
  struct {
   double x, y;
   bool left, right;
  } cursor;
+
+ // Transition-related properties
+ bool transitionToNextScene = false;   // Flag to start the transition
+ bool nextSceneTriggered = false;     // Flag to indicate scene has switched
+ float transitionProgress = 0.0f;     // Interpolation progress (0.0 to 1.0)
+ glm::vec3 initialCameraPosition;     // Camera starting position
+ glm::vec3 targetCameraPosition;      // Camera target position during transition
 };
 
 #endif // _PPGSO_SCENE_H

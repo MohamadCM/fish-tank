@@ -24,24 +24,24 @@ const unsigned int SIZE = 768;
 /*!
  * Custom window for our simple game
  */
-class SceneWindow : public ppgso::Window
-{
+class SceneWindow : public ppgso::Window {
 private:
     Scene scene;
+
     /*!
-     * Reset and initialize the game scene
+     * Reset and initialize the first scene
      * Creating unique smart pointers to objects that are stored in the scene object list
      */
-    void initScene()
-    {
+    void initScene() {
         scene.objects.clear();
 
+        // Light Direction
         scene.lightDirection = {-20.0f, 0.0f, 1.5f};
+
         // Create a camera
         auto camera = std::make_unique<Camera>(60.0f, 1.0f, 0.1f, 100.0f);
         camera->position = {10.0f, -10.0f, 10.0f}; // Set the camera position
         camera->back = glm::normalize(camera->position - glm::vec3{0.0f, 0.0f, 0.0f});
-        // Set the "back" vector to look at (0,0,0)
         camera->update(); // Ensure the view matrix is updated
         scene.camera = std::move(camera);
 
@@ -49,6 +49,7 @@ private:
         auto background = std::make_unique<Background>();
         scene.objects.push_back(std::move(background));
 
+        // Add lamp to the scene
         auto lamp = std::make_unique<Lamp>();
         lamp->position = {-8.0f, 1.0f, -3.0f};
         scene.objects.push_back(std::move(lamp));
@@ -60,34 +61,36 @@ private:
         table->rotation.x = glm::radians(-45.0f);
         scene.objects.push_back(std::move(table));
 
-
+        // Add aquarium to the scene
         auto aquarium = std::make_unique<Aquarium>();
         aquarium->rotation.z = glm::radians(45.0f);
         aquarium->rotation.x = glm::radians(-45.0f);
         aquarium->rotation.y = glm::radians(-90.0f);
-        aquarium->position = {-3.5f, 2, -2.0f};
-        // {-7.0f, 5.5f, -5.0f}
+        aquarium->position = {-3.5f, 2.0f, -2.0f}; // On the table, closer to camera
         scene.objects.push_back(std::move(aquarium));
+
+        // Initialize camera transition variables
+        scene.initialCameraPosition = scene.camera->position;  // Starting position
+        scene.targetCameraPosition = {1.5f, -5.0f, 3.0f};      // Near the aquarium
+        scene.transitionToNextScene = false;
+        scene.transitionProgress = 0.0f;
+        scene.nextSceneTriggered = false;
     }
 
     bool animate = true;
 
 public:
     /*!
-     * Construct custom game window
+     * Construct custom scene window
      */
-    SceneWindow() : Window{"gl9_scene", SIZE, SIZE}
-    {
+    SceneWindow() : Window{"gl9_scene", SIZE, SIZE} {
         // Hide cursor if needed
         // hideCursor();
         glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
 
         // Initialize OpenGL state
-        // Enable Z-buffer
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
-
-        // Enable polygon culling
         glEnable(GL_CULL_FACE);
         glFrontFace(GL_CCW);
         glCullFace(GL_BACK);
@@ -102,20 +105,22 @@ public:
      * @param action Action indicating the key state change
      * @param mods Additional modifiers to consider
      */
-    void onKey(int key, int scanCode, int action, int mods) override
-    {
+    void onKey(int key, int scanCode, int action, int mods) override {
         scene.keyboard[key] = action;
 
         // Reset
-        if (key == GLFW_KEY_R && action == GLFW_PRESS)
-        {
+        if (key == GLFW_KEY_R && action == GLFW_PRESS) {
             initScene();
         }
 
         // Pause
-        if (key == GLFW_KEY_P && action == GLFW_PRESS)
-        {
+        if (key == GLFW_KEY_P && action == GLFW_PRESS) {
             animate = !animate;
+        }
+
+        // Start camera transition and switch scene
+        if (key == GLFW_KEY_SPACE && action == GLFW_PRESS && !scene.transitionToNextScene) {
+            scene.transitionToNextScene = true; // Start the transition
         }
     }
 
@@ -124,8 +129,7 @@ public:
      * @param cursorX Mouse horizontal position in window coordinates
      * @param cursorY Mouse vertical position in window coordinates
      */
-    void onCursorPos(double cursorX, double cursorY) override
-    {
+    void onCursorPos(double cursorX, double cursorY) override {
         scene.cursor.x = cursorX;
         scene.cursor.y = cursorY;
     }
@@ -136,14 +140,11 @@ public:
      * @param action Mouse button state
      * @param mods
      */
-    void onMouseButton(int button, int action, int mods) override
-    {
-        if (button == GLFW_MOUSE_BUTTON_LEFT)
-        {
+    void onMouseButton(int button, int action, int mods) override {
+        if (button == GLFW_MOUSE_BUTTON_LEFT) {
             scene.cursor.left = action == GLFW_PRESS;
 
-            if (scene.cursor.left)
-            {
+            if (scene.cursor.left) {
                 // Convert pixel coordinates to screen coordinates
                 double u = (scene.cursor.x / width - 0.5f) * 2.0f;
                 double v = -(scene.cursor.y / height - 0.5f) * 2.0f;
@@ -156,15 +157,13 @@ public:
                 auto picked = scene.intersect(position, direction);
 
                 // Go through all objects that have been picked
-                for (auto& obj : picked)
-                {
+                for (auto& obj : picked) {
                     // Pass on the click event
                     obj->onClick(scene);
                 }
             }
         }
-        if (button == GLFW_MOUSE_BUTTON_RIGHT)
-        {
+        if (button == GLFW_MOUSE_BUTTON_RIGHT) {
             scene.cursor.right = action == GLFW_PRESS;
         }
     }
@@ -172,8 +171,7 @@ public:
     /*!
      * Window update implementation that will be called automatically from pollEvents
      */
-    void onIdle() override
-    {
+    void onIdle() override {
         // Track time
         static auto time = (float)glfwGetTime();
 
@@ -184,7 +182,6 @@ public:
 
         // Set gray background
         glClearColor(.5f, .5f, .5f, 0);
-        // Clear depth and color buffers
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Update and render all objects

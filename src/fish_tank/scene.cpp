@@ -1,11 +1,32 @@
 #include "scene.h"
+#include "table.h"
 
 void Scene::update(float time) {
+  // Handle camera transition during a scene change
+  if (transitionToNextScene) {
+    transitionProgress += time * 0.5f; // Adjust the speed of the transition as needed
+
+    // Limit the transition progress to 1.0
+    if (transitionProgress > 1.0f) {
+      transitionProgress = 1.0f;
+    }
+
+    // Interpolate the camera's position between initial and target positions
+    camera->position = glm::mix(initialCameraPosition, targetCameraPosition, transitionProgress);
+    camera->back = glm::normalize(camera->position - glm::vec3{-3.5f, 2.0f, -2.0f}); // Adjust to aquarium position
+    camera->update();
+
+    // If the transition is complete and next scene hasn't been triggered yet
+    if (transitionProgress >= 1.0f && !nextSceneTriggered) {
+      switchToNextScene();
+      nextSceneTriggered = true;
+    }
+  }
+
   camera->update();
 
   // Use iterator to update all objects so we can remove while iterating
   auto i = std::begin(objects);
-
   while (i != std::end(objects)) {
     // Update and remove from list if needed
     auto obj = i->get();
@@ -18,13 +39,13 @@ void Scene::update(float time) {
 
 void Scene::render() {
   // Simply render all objects
-  for ( auto& obj : objects )
+  for (auto& obj : objects)
     obj->render(*this);
 }
 
 std::vector<Object*> Scene::intersect(const glm::vec3 &position, const glm::vec3 &direction) {
   std::vector<Object*> intersected = {};
-  for(auto& object : objects) {
+  for (auto& object : objects) {
     // Collision with sphere of size object->scale.x
     auto oc = position - object->position;
     auto radius = object->scale.x;
@@ -37,14 +58,14 @@ std::vector<Object*> Scene::intersect(const glm::vec3 &position, const glm::vec3
       auto e = sqrt(dis);
       auto t = (-b - e) / a;
 
-      if ( t > 0 ) {
+      if (t > 0) {
         intersected.push_back(object.get());
         continue;
       }
 
       t = (-b + e) / a;
 
-      if ( t > 0 ) {
+      if (t > 0) {
         intersected.push_back(object.get());
         continue;
       }
@@ -52,4 +73,19 @@ std::vector<Object*> Scene::intersect(const glm::vec3 &position, const glm::vec3
   }
 
   return intersected;
+}
+
+void Scene::switchToNextScene() {
+  // Clear current scene objects
+  objects.clear();
+
+  // Add objects for the next scene (example: a blank table)
+  auto table = std::make_unique<Table>();
+  table->position = {0.0f, 0.0f, -10.0f};
+  objects.push_back(std::move(table));
+
+  // Reset transition variables
+  transitionToNextScene = false;
+  nextSceneTriggered = false;
+  transitionProgress = 0.0f;
 }
