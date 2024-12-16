@@ -1,25 +1,25 @@
-#include "background.h"
+#include "RoomBackground.h"
 #include <shaders/texture_vert_glsl.h>
 #include <shaders/texture_frag_glsl.h>
 
 // Static resources
-std::unique_ptr<ppgso::Mesh> Background::mesh;
-std::unique_ptr<ppgso::Shader> Background::shader;
-std::unique_ptr<ppgso::Texture> Background::texture;
+std::unique_ptr<ppgso::Mesh> RoomBackground::mesh;
+std::unique_ptr<ppgso::Shader> RoomBackground::shader;
+std::unique_ptr<ppgso::Texture> RoomBackground::texture;
 
-Background::Background() {
+RoomBackground::RoomBackground() {
     // Initialize static resources
     if (!shader) shader = std::make_unique<ppgso::Shader>(texture_vert_glsl, texture_frag_glsl);
     if (!texture) texture = std::make_unique<ppgso::Texture>(ppgso::image::loadBMP("room.bmp"));
     if (!mesh) mesh = std::make_unique<ppgso::Mesh>("quad.obj"); // A flat square covering [-1, 1] range
 }
 
-bool Background::update(Scene &scene, float dt) {
+bool RoomBackground::update(Scene &scene, float dt) {
     // Background is static, no update required
     return true;
 }
 
-void Background::render(Scene &scene) {
+void RoomBackground::render(Scene &scene) {
     // Disable depth writing to ensure the background stays behind all objects
     glDepthMask(GL_FALSE);
 

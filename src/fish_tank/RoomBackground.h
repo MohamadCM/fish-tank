@@ -6,7 +6,7 @@
 /*!
  * A static fullscreen background object to render a 2D image
  */
-class Background final : public Object {
+class RoomBackground final : public Object {
 private:
     // Static resources shared between all instances
     static std::unique_ptr<ppgso::Mesh> mesh;
@@ -17,7 +17,7 @@ public:
     /*!
      * Create a new Background
      */
-    Background();
+    RoomBackground();
 
     /*!
      * Update the background (does nothing as it's static)

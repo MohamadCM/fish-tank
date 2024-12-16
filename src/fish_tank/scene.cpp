@@ -1,5 +1,6 @@
 #include "scene.h"
 #include "table.h"
+#include "WaterBackground.h"
 
 void Scene::update(float time) {
   // Handle camera transition during a scene change
@@ -13,7 +14,7 @@ void Scene::update(float time) {
 
     // Interpolate the camera's position between initial and target positions
     camera->position = glm::mix(initialCameraPosition, targetCameraPosition, transitionProgress);
-    camera->back = glm::normalize(camera->position - glm::vec3{-3.5f, 2.0f, -2.0f}); // Adjust to aquarium position
+    camera->back = glm::normalize(camera->position - glm::vec3{-3.5f, 2.0f, -2.0f}); // TODO: Hardcoded aquarium position
     camera->update();
 
     // If the transition is complete and next scene hasn't been triggered yet
@@ -79,10 +80,10 @@ void Scene::switchToNextScene() {
   // Clear current scene objects
   objects.clear();
 
-  // Add objects for the next scene (example: a blank table)
-  auto table = std::make_unique<Table>();
-  table->position = {0.0f, 0.0f, -10.0f};
-  objects.push_back(std::move(table));
+
+  // Add room background
+  auto background = std::make_unique<WaterBackground>();
+  objects.push_back(std::move(background));
 
   // Reset transition variables
   transitionToNextScene = false;

@@ -12,7 +12,7 @@
 
 #include <ppgso/ppgso.h>
 
-#include "background.h"
+#include "RoomBackground.h"
 #include "table.h"
 #include "camera.h"
 #include "scene.h"
@@ -46,7 +46,7 @@ private:
         scene.camera = std::move(camera);
 
         // Add room background
-        auto background = std::make_unique<Background>();
+        auto background = std::make_unique<RoomBackground>();
         scene.objects.push_back(std::move(background));
 
         // Add lamp to the scene
@@ -71,7 +71,8 @@ private:
 
         // Initialize camera transition variables
         scene.initialCameraPosition = scene.camera->position;  // Starting position
-        scene.targetCameraPosition = {1.5f, -5.0f, 3.0f};      // Near the aquarium
+        // {10.0f, -10.0f, 10.0f}
+        scene.targetCameraPosition = {0.5f, 0.0f, -0.0f};      // Near the aquarium
         scene.transitionToNextScene = false;
         scene.transitionProgress = 0.0f;
         scene.nextSceneTriggered = false;
