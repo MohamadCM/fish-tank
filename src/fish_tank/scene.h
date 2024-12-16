@@ -58,6 +58,7 @@ public:
 
  // Ambient light color
  glm::vec3 ambientLight{0.1f, 0.1f, 0.1f};
+ float bubbleTimer = 0.0f;
 
  // Cursor state
  struct {
@@ -69,6 +70,7 @@ public:
  bool transitionToNextScene = false;   // Flag to start the transition
  bool nextSceneTriggered = false;     // Flag to indicate scene has switched
  float transitionProgress = 0.0f;     // Interpolation progress (0.0 to 1.0)
+ int sceneIndex = 0;
  glm::vec3 initialCameraPosition;     // Camera starting position
  glm::vec3 targetCameraPosition;      // Camera target position during transition
 };

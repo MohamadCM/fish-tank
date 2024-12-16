@@ -1,5 +1,6 @@
 #include "scene.h"
 #include "table.h"
+#include "bubble.h"
 
 void Scene::update(float time)
 {
@@ -25,6 +26,7 @@ void Scene::update(float time)
         {
             switchToNextScene();
             nextSceneTriggered = true;
+            sceneIndex++;
         }
     }
 
@@ -40,6 +42,19 @@ void Scene::update(float time)
             i = objects.erase(i); // NOTE: no need to call destructors as we store shared pointers in the scene
         else
             ++i;
+    }
+
+    if (sceneIndex >= 1)
+    {
+        bubbleTimer += time;
+        if (bubbleTimer > glm::linearRand(0.5f, 5.0f))
+        {
+            auto bubble = std::make_unique<Bubble>();
+            bubble->position = glm::vec3(glm::linearRand(-15.0f, 15.0f), glm::linearRand(-10.0f, 10.0f),
+                                         glm::linearRand(-20.0f, 20.0f));
+            objects.push_back(std::move(bubble));
+            bubbleTimer = 0.0f;
+        }
     }
 }
 

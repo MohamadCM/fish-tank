@@ -12,6 +12,7 @@
 #include "aquarium.h"
 #include "FishType1.h"
 #include "WaterBackground.h"
+#include "bubble.h"
 
 const unsigned int SIZE = 768;
 
@@ -82,13 +83,23 @@ private:
     // Implementation of the second scene objects
     void createSecondScene()
     {
+        scene.camera->position = scene.initialCameraPosition; // Set the camera position
+        scene.camera->back = glm::normalize(scene.camera->position - glm::vec3{0.0f, 0.0f, 0.0f});
+        scene.camera->update(); // Ensure the view matrix is updated
+
         // Add room background
         auto background = std::make_unique<WaterBackground>();
         scene.objects.push_back(std::move(background));
 
-            auto fish = std::make_unique<FishType1>();
-            fish->position = {-10.0f, -3.0f, -10.0f}; // Place the fish in the aquarium
-            scene.objects.push_back(std::move(fish));
+        auto fish = std::make_unique<FishType1>();
+        fish->position = {-10.0f, -3.0f, -10.0f}; // Place the fish in the aquarium
+        scene.objects.push_back(std::move(fish));
+
+        for (int i = 0; i < 5; i++) {
+            auto bubble = std::make_unique<Bubble>();
+            bubble->position = glm::vec3(glm::linearRand(-15.0f, 5.0f), glm::linearRand(-10.0f, 0.0f), glm::linearRand(-10.0f, 10.0f));
+            scene.objects.push_back(std::move(bubble));
+        }
     }
 
     bool animate = true;
