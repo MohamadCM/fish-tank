@@ -14,6 +14,7 @@
 #include "FishType2.h"
 #include "WaterBackground.h"
 #include "bubble.h"
+#include "Shark.h"
 
 const unsigned int SIZE = 768;
 
@@ -96,6 +97,10 @@ private:
         auto fish2 = std::make_unique<FishType2>();
         fish2->position = {-10.0f, -3.0f, -10.0f}; // Place the fish in the aquarium
         scene.objects.push_back(std::move(fish2));
+
+        auto shark = std::make_unique<Shark>();
+        shark->position = {-5.0f, -1.0f, -7.0f}; // Place the fish in the aquarium
+        scene.objects.push_back(std::move(shark));
 
         for (int i = 0; i < 5; i++) {
             auto bubble = std::make_unique<Bubble>();

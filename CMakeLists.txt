@@ -181,6 +181,8 @@ add_executable(fish_tank
         src/fish_tank/bubble.cpp
         src/fish_tank/FishType2.cpp
         src/fish_tank/FishType2.h
+        src/fish_tank/Shark.cpp
+        src/fish_tank/Shark.h
 )
 target_link_libraries(fish_tank ppgso shaders)
 install(TARGETS fish_tank DESTINATION .)
