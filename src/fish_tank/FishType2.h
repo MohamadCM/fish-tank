@@ -36,4 +36,6 @@ public:
   */
  void render(Scene& scene) override;
  void fleeFrom(const glm::vec3& predatorPosition, float fleeSpeed, float dt);
+ bool checkCollision(Object& otherFish);
+ void resolveCollision(Object& otherFish);
 };

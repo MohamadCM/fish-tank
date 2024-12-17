@@ -37,6 +37,19 @@ bool FishType2::update(Scene& scene, float dt)
     rotation.x += rotMomentum.x * dt * 0.1f;
     rotation.y += rotMomentum.y * dt * 0.1f;
 
+    // Check for collisions with other fish
+    for (auto& obj : scene.objects)
+    {
+        auto otherFish = dynamic_cast<Object*>(obj.get());
+        if (otherFish && otherFish != this)
+        {
+            if (checkCollision(*otherFish))
+            {
+                resolveCollision(*otherFish);
+            }
+        }
+    }
+
     generateModelMatrix();
     return true;
 }
@@ -57,12 +70,34 @@ void FishType2::render(Scene& scene)
     mesh->render();
 }
 
-void FishType2::fleeFrom(const glm::vec3& predatorPosition, float fleeSpeed, float dt) {
+void FishType2::fleeFrom(const glm::vec3& predatorPosition, float fleeSpeed, float dt)
+{
     glm::vec3 direction = position - predatorPosition;
     float distance = glm::length(direction);
 
-    if (distance < 5.0f) { // Flee when the predator is within a certain distance
+    if (distance < 5.0f)
+    {
+        // Flee when the predator is within a certain distance
         direction = glm::normalize(direction);
         position += direction * fleeSpeed * dt;
     }
+}
+
+bool FishType2::checkCollision(Object& otherFish)
+{
+    float distance = glm::length(position - otherFish.position);
+    return distance < (boundingRadius + otherFish.boundingRadius);
+}
+
+void FishType2::resolveCollision(Object& otherFish)
+{
+    // Compute the collision normal
+    glm::vec3 collisionNormal = glm::normalize(position - otherFish.position);
+
+    // Reflect velocities along the collision normal
+    speed = glm::reflect(speed, collisionNormal);
+
+    // Slightly separate the fish to prevent sticking
+    position += collisionNormal * 0.01f;
+    otherFish.position -= collisionNormal * 0.01f;
 }
