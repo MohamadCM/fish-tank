@@ -56,3 +56,13 @@ void Shark::render(Scene& scene)
     // Render the mesh
     mesh->render();
 }
+
+void Shark::chase(const glm::vec3& preyPosition, float chaseSpeed, float dt) {
+    glm::vec3 direction = preyPosition - position;
+    float distance = glm::length(direction);
+
+    if (distance > 0.5f) { // Stop if close enough to the prey
+        direction = glm::normalize(direction);
+        position += direction * chaseSpeed * dt;
+    }
+}

@@ -1,6 +1,9 @@
 #include "scene.h"
 #include "table.h"
 #include "bubble.h"
+#include "FishType1.h"
+#include "FishType2.h"
+#include "Shark.h"
 
 void Scene::update(float time)
 {
@@ -29,6 +32,58 @@ void Scene::update(float time)
             sceneIndex++;
         }
     }
+
+    std::vector<Object*> sharkList;
+    std::vector<Object*> fishList;
+
+    for (auto& obj : objects)
+    {
+        if (dynamic_cast<Shark*>(obj.get()))
+        {
+            auto shark = dynamic_cast<Shark*>(obj.get());
+            if(!shark)
+            {
+                sharkList.push_back(shark);
+            }
+        }
+        else if (dynamic_cast<FishType1*>(obj.get()))
+        {
+            fishList.push_back(obj.get());
+        }
+    }
+
+    if (!sharkList.empty())
+    {
+        for (auto shark: sharkList)
+        {
+            // Shark chases the nearest fish
+            Object* closestFish = nullptr;
+            float minDistance = std::numeric_limits<float>::max();
+
+            for (auto fish : fishList)
+            {
+                float distance = glm::length(shark->position - fish->position);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    closestFish = fish;
+                }
+            }
+
+            if (closestFish)
+            {
+                (dynamic_cast<Shark*>(shark))->chase(closestFish->position, 2.0f, time); // Shark moves at chaseSpeed = 2.0f
+            }
+
+            // Fish flee from the shark
+            for (auto fish : fishList) {
+                if (shark) {
+                    (dynamic_cast<FishType1*>(fish))->fleeFrom(shark->position, 3.0f, time); // Fish move at fleeSpeed = 3.0f
+                }
+            }
+        }
+    }
+
 
     camera->update();
 

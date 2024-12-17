@@ -40,4 +40,5 @@ public:
   * @param scene Scene to render in
   */
  void render(Scene& scene) override;
+ void fleeFrom(const glm::vec3& predatorPosition, float fleeSpeed, float dt);
 };

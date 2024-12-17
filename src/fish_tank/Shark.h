@@ -11,7 +11,8 @@
 /*!
  * Shark object
  */
-class Shark final : public Object {
+class Shark final : public Object
+{
 private:
     // Static resources shared across instances
     static std::unique_ptr<ppgso::Mesh> mesh;
@@ -32,11 +33,12 @@ public:
      * @param dt Time delta for animation purposes
      * @return False if the object should be deleted
      */
-    bool update(Scene &scene, float dt) override;
+    bool update(Scene& scene, float dt) override;
 
     /*!
      * Render the Shark
      * @param scene Scene to render in
      */
-    void render(Scene &scene) override;
+    void render(Scene& scene) override;
+    void chase(const glm::vec3& preyPosition, float chaseSpeed, float dt);
 };

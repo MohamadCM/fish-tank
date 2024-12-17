@@ -56,3 +56,13 @@ void FishType2::render(Scene& scene)
     // Render the mesh
     mesh->render();
 }
+
+void FishType2::fleeFrom(const glm::vec3& predatorPosition, float fleeSpeed, float dt) {
+    glm::vec3 direction = position - predatorPosition;
+    float distance = glm::length(direction);
+
+    if (distance < 5.0f) { // Flee when the predator is within a certain distance
+        direction = glm::normalize(direction);
+        position += direction * fleeSpeed * dt;
+    }
+}
