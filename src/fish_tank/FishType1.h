@@ -11,7 +11,8 @@
 /*!
  * FishType1 object
  */
-class FishType1 final : public Object {
+class FishType1 final : public Object
+{
 private:
  // Static resources shared across instances
  static std::unique_ptr<ppgso::Mesh> mesh;
@@ -32,11 +33,11 @@ public:
   * @param dt Time delta for animation purposes
   * @return False if the object should be deleted
   */
- bool update(Scene &scene, float dt) override;
+ bool update(Scene& scene, float dt) override;
 
  /*!
   * Render the FishType1
   * @param scene Scene to render in
   */
- void render(Scene &scene) override;
+ void render(Scene& scene) override;
 };

@@ -98,29 +98,37 @@ private:
         auto background = std::make_unique<WaterBackground>();
         scene.objects.push_back(std::move(background));
 
-        for (int i = 0; i<= NUMBER_OF_FISH_1; i++)
+        for (int i = 0; i <= NUMBER_OF_FISH_1; i++)
         {
             auto fish = std::make_unique<FishType1>();
-            fish->position = {glm::linearRand(-5.0f, 5.0f), glm::linearRand(-5.0f, 5.0f), glm::linearRand(-20.0f, 40.0f)};
+            fish->position = {
+                glm::linearRand(-5.0f, 5.0f), glm::linearRand(-5.0f, 5.0f), glm::linearRand(-20.0f, 40.0f)
+            };
             scene.objects.push_back(std::move(fish));
         }
-        for (int i = 0; i<= NUMBER_OF_FISH_2; i++)
+        for (int i = 0; i <= NUMBER_OF_FISH_2; i++)
         {
             auto fish2 = std::make_unique<FishType2>();
-            fish2->position = {glm::linearRand(-5.0f, 5.0f), glm::linearRand(-5.0f, 5.0f), glm::linearRand(-20.0f, 40.0f)};
+            fish2->position = {
+                glm::linearRand(-5.0f, 5.0f), glm::linearRand(-5.0f, 5.0f), glm::linearRand(-20.0f, 40.0f)
+            };
             scene.objects.push_back(std::move(fish2));
         }
 
-        for (int i = 0; i<= NUMBER_OF_SHARK; i++)
+        for (int i = 0; i <= NUMBER_OF_SHARK; i++)
         {
             auto shark = std::make_unique<Shark>();
-            shark->position = {glm::linearRand(-5.0f, 5.0f), glm::linearRand(-5.0f, 5.0f), glm::linearRand(-20.0f, 40.0f)};
+            shark->position = {
+                glm::linearRand(-5.0f, 5.0f), glm::linearRand(-5.0f, 5.0f), glm::linearRand(-20.0f, 40.0f)
+            };
             scene.objects.push_back(std::move(shark));
         }
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++)
+        {
             auto bubble = std::make_unique<Bubble>();
-            bubble->position = glm::vec3(glm::linearRand(-15.0f, 5.0f), glm::linearRand(-10.0f, 0.0f), glm::linearRand(-10.0f, 10.0f));
+            bubble->position = glm::vec3(glm::linearRand(-15.0f, 5.0f), glm::linearRand(-10.0f, 0.0f),
+                                         glm::linearRand(-10.0f, 10.0f));
             scene.objects.push_back(std::move(bubble));
         }
     }
@@ -180,21 +188,23 @@ public:
         }
 
         // Camera movement
-        if (action == GLFW_PRESS || action == GLFW_RELEASE) {
+        if (action == GLFW_PRESS || action == GLFW_RELEASE)
+        {
             float direction = (action == GLFW_PRESS) ? 1.0f : 0.0f;
 
-            switch (key) {
+            switch (key)
+            {
             case GLFW_KEY_UP:
                 cameraMovement.z = -direction; // Move forward
                 break;
             case GLFW_KEY_DOWN:
-                cameraMovement.z = direction;  // Move backward
+                cameraMovement.z = direction; // Move backward
                 break;
             case GLFW_KEY_LEFT:
                 cameraMovement.x = -direction; // Move left
                 break;
             case GLFW_KEY_RIGHT:
-                cameraMovement.x = direction;  // Move right
+                cameraMovement.x = direction; // Move right
                 break;
             }
         }
@@ -263,7 +273,8 @@ public:
 
         time = (float)glfwGetTime();
 
-        if (scene.camera) {
+        if (scene.camera)
+        {
             glm::vec3 movement = cameraMovement * cameraSpeed * dt;
 
             // Move the camera in world space
