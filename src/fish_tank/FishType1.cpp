@@ -22,16 +22,23 @@ FishType1::FishType1()
     rotMomentum = glm::ballRand(ppgso::PI);
 
     speed = {glm::linearRand(-0.05f, 0.05f), glm::linearRand(-1.0f, 2.0f), glm::linearRand(-25.0f, 25.0f)};
+    center = position;
 }
 
 bool FishType1::update(Scene& scene, float dt)
 {
     shader->use();
-    position += speed * dt;
+    angle += velocity * dt;
 
-    if (position.x > 15.0f || position.x < -15.0f) speed.x = -speed.x;
-    if (position.y > 30.0f || position.y < -15.0f) speed.y = -speed.y;
-    if (position.z > 50.0f || position.z < -150.0f) speed.z = -speed.z;
+    // Keep the angle within 0 to 2π for stability
+    if (angle > glm::two_pi<float>()) {
+        angle -= glm::two_pi<float>();
+    }
+
+    // Update the position using the parametric equation
+    position.x = center.x + radius * cos(angle);
+    position.y = center.y + radius * sin(angle);
+    position.z = center.z + sin(angle);
 
     // Rotate the object
 

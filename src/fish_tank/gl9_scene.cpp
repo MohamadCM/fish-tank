@@ -104,6 +104,9 @@ private:
             fish->position = {
                 glm::linearRand(-5.0f, 5.0f), glm::linearRand(-5.0f, 5.0f), glm::linearRand(-20.0f, 40.0f)
             };
+            fish->center = fish->position;
+            fish->velocity = glm::linearRand(0.0f, 10.0f) * 0.1f;
+            fish->radius = glm::linearRand(0.0f, 15.0f) * 3.0f;
             scene.objects.push_back(std::move(fish));
         }
         for (int i = 0; i <= NUMBER_OF_FISH_2; i++)

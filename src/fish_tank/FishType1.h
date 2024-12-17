@@ -21,7 +21,11 @@ private:
 
 public:
  glm::vec3 speed;
+ float velocity = 2.0f;
  glm::vec3 rotMomentum;
+ glm::vec3 center;
+ float radius = 10.0f;                // Radius of the circle
+ float angle = 0.0f;
  /*!
   * Create an FishType1 object
   */
