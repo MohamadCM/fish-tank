@@ -18,10 +18,10 @@ FishType2::FishType2()
     if (!mesh) mesh = std::make_unique<ppgso::Mesh>("fish_2.gltf");
     if (!texture) texture = std::make_unique<ppgso::Texture>(ppgso::image::loadBMP("textures/fish_2_baseColor.bmp"));
     scale = glm::vec3(0.05f, 0.05f, 0.05f);
-    // rotation = glm::ballRand(ppgso::PI);
-    // rotMomentum = glm::ballRand(ppgso::PI);
+    rotation = glm::ballRand(ppgso::PI);
+    rotMomentum = glm::ballRand(ppgso::PI);
 
-    speed = {glm::linearRand(-2.0f, 2.0f), glm::linearRand(-5.0f, -10.0f), 3.0f};
+    speed = {glm::linearRand(-0.05f, 0.05f), glm::linearRand(-1.0f, 2.0f), glm::linearRand(-25.0f, 25.0f)};;
 }
 
 bool FishType2::update(Scene& scene, float dt)
@@ -30,11 +30,12 @@ bool FishType2::update(Scene& scene, float dt)
     position += speed * dt;
 
     if (position.x > 15.0f || position.x < -15.0f) speed.x = -speed.x;
-    if (position.y > 12.5f || position.y < -12.5f) speed.y = -speed.y;
-    if (position.z > 15.0f || position.z < -15.0f) speed.z = -speed.z;
+    if (position.y > 30.0f || position.y < -15.0f) speed.y = -speed.y;
+    if (position.z > 50.0f || position.z < -150.0f) speed.z = -speed.z;
 
     // Rotate the object
-    rotation += rotMomentum * dt;
+    rotation.x += rotMomentum.x * dt * 0.1f;
+    rotation.y += rotMomentum.y * dt * 0.1f;
 
     generateModelMatrix();
     return true;

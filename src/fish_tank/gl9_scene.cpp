@@ -15,6 +15,9 @@
 #include "WaterBackground.h"
 #include "bubble.h"
 #include "Shark.h"
+#define NUMBER_OF_FISH_1 20
+#define NUMBER_OF_FISH_2 15
+#define NUMBER_OF_SHARK 5
 
 const unsigned int SIZE = 768;
 
@@ -26,6 +29,11 @@ class SceneWindow : public ppgso::Window
 private:
     Scene scene;
 
+    // Camera movement speed
+    float cameraSpeed = 2.0f;
+
+    // Camera movement state
+    glm::vec3 cameraMovement = {0.0f, 0.0f, 0.0f};
     /*!
      * Reset and initialize the first scene
      * Creating unique smart pointers to objects that are stored in the scene object list
@@ -90,17 +98,25 @@ private:
         auto background = std::make_unique<WaterBackground>();
         scene.objects.push_back(std::move(background));
 
-        auto fish = std::make_unique<FishType1>();
-        fish->position = {-8.0f, -0.0f, -10.0f}; // Place the fish in the aquarium
-        scene.objects.push_back(std::move(fish));
+        for (int i = 0; i<= NUMBER_OF_FISH_1; i++)
+        {
+            auto fish = std::make_unique<FishType1>();
+            fish->position = {glm::linearRand(-5.0f, 5.0f), glm::linearRand(-5.0f, 5.0f), glm::linearRand(-20.0f, 40.0f)};
+            scene.objects.push_back(std::move(fish));
+        }
+        for (int i = 0; i<= NUMBER_OF_FISH_2; i++)
+        {
+            auto fish2 = std::make_unique<FishType2>();
+            fish2->position = {glm::linearRand(-5.0f, 5.0f), glm::linearRand(-5.0f, 5.0f), glm::linearRand(-20.0f, 40.0f)};
+            scene.objects.push_back(std::move(fish2));
+        }
 
-        auto fish2 = std::make_unique<FishType2>();
-        fish2->position = {-10.0f, -3.0f, -10.0f}; // Place the fish in the aquarium
-        scene.objects.push_back(std::move(fish2));
-
-        auto shark = std::make_unique<Shark>();
-        shark->position = {-5.0f, -1.0f, -7.0f}; // Place the fish in the aquarium
-        scene.objects.push_back(std::move(shark));
+        for (int i = 0; i<= NUMBER_OF_SHARK; i++)
+        {
+            auto shark = std::make_unique<Shark>();
+            shark->position = {glm::linearRand(-5.0f, 5.0f), glm::linearRand(-5.0f, 5.0f), glm::linearRand(-20.0f, 40.0f)};
+            scene.objects.push_back(std::move(shark));
+        }
 
         for (int i = 0; i < 5; i++) {
             auto bubble = std::make_unique<Bubble>();
@@ -131,6 +147,7 @@ public:
         initScene();
 
         createFirstScene();
+        // createSecondScene();
     }
 
     /*!
@@ -160,6 +177,26 @@ public:
         if (key == GLFW_KEY_SPACE && action == GLFW_PRESS && !scene.transitionToNextScene)
         {
             scene.transitionToNextScene = true; // Start the transition
+        }
+
+        // Camera movement
+        if (action == GLFW_PRESS || action == GLFW_RELEASE) {
+            float direction = (action == GLFW_PRESS) ? 1.0f : 0.0f;
+
+            switch (key) {
+            case GLFW_KEY_UP:
+                cameraMovement.z = -direction; // Move forward
+                break;
+            case GLFW_KEY_DOWN:
+                cameraMovement.z = direction;  // Move backward
+                break;
+            case GLFW_KEY_LEFT:
+                cameraMovement.x = -direction; // Move left
+                break;
+            case GLFW_KEY_RIGHT:
+                cameraMovement.x = direction;  // Move right
+                break;
+            }
         }
     }
 
@@ -226,6 +263,16 @@ public:
 
         time = (float)glfwGetTime();
 
+        if (scene.camera) {
+            glm::vec3 movement = cameraMovement * cameraSpeed * dt;
+
+            // Move the camera in world space
+            scene.camera->position += movement;
+
+            // Recalculate the "back" vector to keep the camera looking at the same point
+            scene.camera->back = glm::normalize(scene.camera->position - glm::vec3{0.0f, 0.0f, 0.0f});
+            scene.camera->update();
+        }
         // Set gray background
         glClearColor(.5f, .5f, .5f, 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
