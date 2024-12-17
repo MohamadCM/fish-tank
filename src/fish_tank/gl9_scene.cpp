@@ -190,22 +190,25 @@ public:
         // Camera movement
         if (action == GLFW_PRESS || action == GLFW_RELEASE)
         {
-            float direction = (action == GLFW_PRESS) ? 1.0f : 0.0f;
-
-            switch (key)
+            if (scene.sceneIndex >= 1)
             {
-            case GLFW_KEY_UP:
-                cameraMovement.z = -direction; // Move forward
-                break;
-            case GLFW_KEY_DOWN:
-                cameraMovement.z = direction; // Move backward
-                break;
-            case GLFW_KEY_LEFT:
-                cameraMovement.x = -direction; // Move left
-                break;
-            case GLFW_KEY_RIGHT:
-                cameraMovement.x = direction; // Move right
-                break;
+                float direction = (action == GLFW_PRESS) ? 1.0f : 0.0f;
+
+                switch (key)
+                {
+                case GLFW_KEY_UP:
+                    cameraMovement.z = -direction; // Move forward
+                    break;
+                case GLFW_KEY_DOWN:
+                    cameraMovement.z = direction; // Move backward
+                    break;
+                case GLFW_KEY_LEFT:
+                    cameraMovement.x = -direction; // Move left
+                    break;
+                case GLFW_KEY_RIGHT:
+                    cameraMovement.x = direction; // Move right
+                    break;
+                }
             }
         }
     }
