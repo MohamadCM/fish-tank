@@ -14,6 +14,7 @@
  */
 class Lamp final : public Object {
 private:
+ float elapsedTime = 0.0f; // Accumulator for movement
  static std::unique_ptr<ppgso::Mesh> mesh;
  static std::unique_ptr<ppgso::Shader> shader;
  static std::unique_ptr<ppgso::Texture> baseColor;
