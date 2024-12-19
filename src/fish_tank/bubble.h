@@ -23,6 +23,9 @@ public:
  glm::vec3 rotMomentum;
  float age;
  float lifetime;
+ float gravityForce = 10.0;
+    float gravity = -0.981f;  // Gravity force (downward)
+ float buoyantForce = 5.0f;  // Buoyant force (upward) - adjust as needed for desired floating speed
 
  /*!
   * Create a Bubble object

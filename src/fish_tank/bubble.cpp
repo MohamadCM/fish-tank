@@ -22,12 +22,19 @@ Bubble::Bubble()
 
     scale *= glm::linearRand(0.1f, 0.5f);
     speed = {0.0, glm::linearRand(-3.0f, 3.0f), glm::linearRand(-0.5f, 0.5f)};
+
+    buoyantForce *= scale.y;
 }
 
 bool Bubble::update(Scene& scene, float dt)
 {
     shader->use();
+
+    // Apply gravity and boyount force (downward force)
+    speed.y += gravity * dt;
+    speed.y += buoyantForce * dt;
     position += speed * dt;
+
     age += dt;
     if (age > lifetime) return false;
 
