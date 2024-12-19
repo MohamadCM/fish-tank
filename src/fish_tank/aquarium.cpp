@@ -29,7 +29,6 @@ bool Aquarium::update(Scene& scene, float dt)
     if(table)
     {
         position = table->position + offset;
-        std::cout << position.x << "-" << position.y  << "-" << position.z << "-" << std::endl;
     }
 
     generateModelMatrix();
