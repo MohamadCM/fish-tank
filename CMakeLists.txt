@@ -96,6 +96,7 @@ set(PPGSO_SHADER_SRC
         shader/convolution_vert.glsl shader/convolution_frag.glsl
         shader/diffuse_vert.glsl shader/diffuse_frag.glsl
         shader/diffuse_transparent_frag.glsl
+        shader/bezier_surface_vert.glsl
         shader/texture_vert.glsl shader/texture_frag.glsl
         shader/texture_vert.glsl shader/advanced_material_frag.glsl
         shader/texture_vert.glsl shader/advanced_material_vert.glsl
@@ -184,6 +185,8 @@ add_executable(fish_tank
         src/fish_tank/FishType2.h
         src/fish_tank/Shark.cpp
         src/fish_tank/Shark.h
+        src/fish_tank/BezierSurface.cpp
+        src/fish_tank/BezierSurface.h
 )
 target_link_libraries(fish_tank ppgso shaders)
 install(TARGETS fish_tank DESTINATION .)

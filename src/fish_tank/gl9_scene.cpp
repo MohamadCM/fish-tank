@@ -10,6 +10,7 @@
 #include "scene.h"
 #include "lamp.h"
 #include "aquarium.h"
+#include "BezierSurface.h"
 #include "FishType1.h"
 #include "FishType2.h"
 #include "WaterBackground.h"
@@ -139,8 +140,11 @@ private:
                                          glm::linearRand(-10.0f, 10.0f));
             scene.objects.push_back(std::move(bubble));
         }
-    }
 
+
+        // auto ground = std::make_unique<BezierSurface>();
+        // scene.objects.push_back(std::move(ground));
+    }
     bool animate = true;
 
 public:
