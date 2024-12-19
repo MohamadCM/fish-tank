@@ -95,6 +95,7 @@ set(PPGSO_SHADER_SRC
         shader/color_vert.glsl shader/color_frag.glsl
         shader/convolution_vert.glsl shader/convolution_frag.glsl
         shader/diffuse_vert.glsl shader/diffuse_frag.glsl
+        shader/diffuse_transparent_frag.glsl
         shader/texture_vert.glsl shader/texture_frag.glsl
         shader/texture_vert.glsl shader/advanced_material_frag.glsl
         shader/texture_vert.glsl shader/advanced_material_vert.glsl
