@@ -59,6 +59,12 @@ void main() {
     vec3 ambient = baseColor * 0.1; // Add a simple ambient term
     vec3 finalColor = ambient + diffuse + specular * metallic;
 
+
+    // Post-Processing shaders
+    vec4 color = texture(BaseColorTexture, FragTexCoord);
+    float grayscale = 0.299 * color.r + 0.587 * color.g + 0.114 * color.b;
+    FragColor = vec4(vec3(grayscale), color.a);
+
     // 8. Output the final color
-    FragColor = vec4(finalColor, 1.0);
+    // FragColor = vec4(finalColor, 1.0);
 }
