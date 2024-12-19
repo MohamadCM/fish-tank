@@ -6,25 +6,38 @@
 #include <shaders/diffuse_vert_glsl.h>
 #include <shaders/diffuse_frag_glsl.h>
 
+#include "table.h"
+
 // Static resources
 std::unique_ptr<ppgso::Mesh> Aquarium::mesh;
 std::unique_ptr<ppgso::Shader> Aquarium::shader;
 std::unique_ptr<ppgso::Texture> Aquarium::texture;
 
-Aquarium::Aquarium() {
+Aquarium::Aquarium(Object* tableRef) : table(tableRef) {
     // Load shared resources if not already loaded
     if (!shader) shader = std::make_unique<ppgso::Shader>(diffuse_vert_glsl, diffuse_frag_glsl);
     if (!mesh) mesh = std::make_unique<ppgso::Mesh>("aquarium.gltf");
     if (!texture) texture = std::make_unique<ppgso::Texture>(ppgso::image::loadBMP("textures/glass.bmp"));
     scale = glm::vec3(0.7f, 0.7f, 0.7f);
+    table = tableRef;
 }
 
-bool Aquarium::update(Scene &scene, float dt) {
+bool Aquarium::update(Scene& scene, float dt)
+{
+    age += dt;
+
+    if(table)
+    {
+        position = table->position + offset;
+        std::cout << position.x << "-" << position.y  << "-" << position.z << "-" << std::endl;
+    }
+
     generateModelMatrix();
     return true;
 }
 
-void Aquarium::render(Scene &scene) {
+void Aquarium::render(Scene& scene)
+{
     shader->use();
 
     // Set light uniforms
@@ -37,7 +50,7 @@ void Aquarium::render(Scene &scene) {
     shader->setUniform("ModelMatrix", modelMatrix);
 
     // Bind textures (example for base color)
-  shader->setUniform("Texture", *texture);
+    shader->setUniform("Texture", *texture);
     // Bind additional textures as needed (e.g., normal map, metallic map)
 
     // Render the mesh

@@ -77,11 +77,11 @@ private:
         scene.objects.push_back(std::move(table));
 
         // Add aquarium to the scene
-        auto aquarium = std::make_unique<Aquarium>();
+        auto aquarium = std::make_unique<Aquarium>(scene.objects.back().get());
         aquarium->rotation.z = glm::radians(45.0f);
         aquarium->rotation.x = glm::radians(-45.0f);
         aquarium->rotation.y = glm::radians(-90.0f);
-        aquarium->position = {-3.5f, 2.0f, -2.0f}; // On the table, closer to camera
+        aquarium->offset = {6.5f, 5.0f, 8.0f};
         scene.objects.push_back(std::move(aquarium));
 
         // Initialize camera transition variables
