@@ -88,6 +88,11 @@ private:
         scene.initialCameraPosition = scene.camera->position; // Starting position
         // {10.0f, -10.0f, 10.0f}
         scene.targetCameraPosition = {0.5f, 0.0f, -0.0f}; // Near the aquarium
+
+        scene.bezierP0 = {-20.0f, 15.0f, -15.0f};  // Start point (closer to the table)
+        scene.bezierP1 = {-10.0f, 20.0f, -25.0f};  // Control point 1 (slightly to the left and closer)
+        scene.bezierP2 = {10.0f, 20.0f, -25.0f};   // Control point 2 (slightly to the right and closer)
+        scene.bezierP3 = {20.0f, 15.0f, -15.0f};   // End point (closer to the table)
     }
 
     // Implementation of the second scene objects

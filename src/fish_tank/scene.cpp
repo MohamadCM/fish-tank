@@ -7,6 +7,19 @@
 
 void Scene::update(float time)
 {
+    if(sceneIndex == 0) // Move camera on a bezier curve on the first scene
+    {
+        cameraTime += cameraSpeed * time;
+        if (cameraTime > 1.0f) cameraTime = 0.0f; // Loop back
+
+        glm::vec3 newPosition = evaluateBezier(cameraTime, bezierP0, bezierP1, bezierP2, bezierP3);
+        camera->position = newPosition;
+
+        // Ensure the camera is always looking at the table
+        glm::vec3 tableCenter = {-10.0f, -3.0f, -10.0f}; // Adjust based on table position
+        camera->back = glm::normalize(camera->position - tableCenter);
+    }
+
     // Handle camera transition during a scene change
     if (transitionToNextScene)
     {
@@ -41,7 +54,7 @@ void Scene::update(float time)
         if (dynamic_cast<Shark*>(obj.get()))
         {
             auto shark = dynamic_cast<Shark*>(obj.get());
-            if(!shark)
+            if (!shark)
             {
                 sharkList.push_back(shark);
             }
@@ -54,7 +67,7 @@ void Scene::update(float time)
 
     if (!sharkList.empty())
     {
-        for (auto shark: sharkList)
+        for (auto shark : sharkList)
         {
             // Shark chases the nearest fish
             Object* closestFish = nullptr;
@@ -72,13 +85,17 @@ void Scene::update(float time)
 
             if (closestFish)
             {
-                (dynamic_cast<Shark*>(shark))->chase(closestFish->position, 2.0f, time); // Shark moves at chaseSpeed = 2.0f
+                (dynamic_cast<Shark*>(shark))->chase(closestFish->position, 2.0f, time);
+                // Shark moves at chaseSpeed = 2.0f
             }
 
             // Fish flee from the shark
-            for (auto fish : fishList) {
-                if (shark) {
-                    (dynamic_cast<FishType1*>(fish))->fleeFrom(shark->position, 3.0f, time); // Fish move at fleeSpeed = 3.0f
+            for (auto fish : fishList)
+            {
+                if (shark)
+                {
+                    (dynamic_cast<FishType1*>(fish))->fleeFrom(shark->position, 3.0f, time);
+                    // Fish move at fleeSpeed = 3.0f
                 }
             }
         }
@@ -166,4 +183,17 @@ void Scene::switchToNextScene()
     transitionToNextScene = false;
     nextSceneTriggered = false;
     transitionProgress = 0.0f;
+}
+
+glm::vec3 Scene::evaluateBezier(float t, const glm::vec3& p0, const glm::vec3& p1, const glm::vec3& p2,
+                                const glm::vec3& p3)
+{
+    float u = 1.0f - t;
+    float tt = t * t;
+    float uu = u * u;
+    float uuu = uu * u;
+    float ttt = tt * t;
+
+    glm::vec3 point = (uuu * p0) + (3 * uu * t * p1) + (3 * u * tt * p2) + (ttt * p3);
+    return point;
 }

@@ -73,6 +73,13 @@ public:
  int sceneIndex = 0;
  glm::vec3 initialCameraPosition;     // Camera starting position
  glm::vec3 targetCameraPosition;      // Camera target position during transition
+
+
+ glm::vec3 evaluateBezier(float t, const glm::vec3& p0, const glm::vec3& p1, const glm::vec3& p2,
+                          const glm::vec3& p3);
+ float cameraTime = 0.0f; // Time parameter for the Bezier curve
+ float cameraSpeed = 0.05f; // Speed of the camera along the curve
+ glm::vec3 bezierP0, bezierP1, bezierP2, bezierP3; // Control points
 };
 
 #endif // _PPGSO_SCENE_H
