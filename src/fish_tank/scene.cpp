@@ -32,7 +32,7 @@ void Scene::update(float time)
         }
 
         // Interpolate the camera's position between initial and target positions
-        camera->position = glm::mix(initialCameraPosition, targetCameraPosition, transitionProgress);
+        camera->position = glm::mix(camera->position, targetCameraPosition, transitionProgress);
         camera->back = glm::normalize(camera->position - glm::vec3{-3.5f, 2.0f, -2.0f});
         // TODO: Hardcoded aquarium position
         camera->update();
