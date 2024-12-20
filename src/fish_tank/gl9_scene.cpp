@@ -126,7 +126,7 @@ private:
 
         for (int i = 0; i <= NUMBER_OF_SHARK; i++)
         {
-            auto shark = std::make_unique<Shark>();
+            auto shark = std::make_unique<Shark>(true);
             shark->position = {
                 glm::linearRand(-5.0f, 5.0f), glm::linearRand(-5.0f, 5.0f), glm::linearRand(-20.0f, 40.0f)
             };
