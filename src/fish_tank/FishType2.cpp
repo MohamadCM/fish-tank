@@ -30,7 +30,7 @@ bool FishType2::update(Scene& scene, float dt)
     position += speed * dt;
 
     if (position.x > 15.0f || position.x < -15.0f) speed.x = -speed.x;
-    if (position.y > 30.0f || position.y < -15.0f) speed.y = -speed.y;
+    if (position.y > 30.0f || position.y < -5.0f) speed.y = -speed.y;
     if (position.z > 50.0f || position.z < -150.0f) speed.z = -speed.z;
 
     // Rotate the object

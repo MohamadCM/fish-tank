@@ -10,6 +10,7 @@
 #include "scene.h"
 #include "lamp.h"
 #include "aquarium.h"
+#include "asteroid.h"
 #include "BezierSurface.h"
 #include "FishType1.h"
 #include "FishType2.h"
@@ -141,6 +142,11 @@ private:
             scene.objects.push_back(std::move(bubble));
         }
 
+
+        float groundMin = -10.0f;
+        float groundMax = 10.0f;
+        float groundHeight = -15.0f;
+        spawnAsteroids(scene, 50, groundMin, groundMax, groundHeight);
 
         // auto ground = std::make_unique<BezierSurface>();
         // scene.objects.push_back(std::move(ground));
@@ -311,6 +317,24 @@ public:
         }
 
         scene.render();
+    }
+
+    void spawnAsteroids(Scene& scene, int count, float groundMin, float groundMax, float groundHeight) {
+        for (int i = 0; i < count; ++i) {
+            // Generate random position within ground bounds
+            float x = glm::linearRand(groundMin, groundMax);
+            float z = glm::linearRand(groundMin, groundMax);
+
+            // Y-position slightly above the ground
+            float y = groundHeight + glm::linearRand(0.5f, 2.0f);
+
+            // Create an asteroid and set its position
+            auto asteroid = std::make_unique<Asteroid>();
+            asteroid->position = {x, y, z};
+
+            // Add the asteroid to the scene
+            scene.objects.push_back(std::move(asteroid));
+        }
     }
 };
 

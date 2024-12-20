@@ -187,6 +187,8 @@ add_executable(fish_tank
         src/fish_tank/Shark.h
         src/fish_tank/BezierSurface.cpp
         src/fish_tank/BezierSurface.h
+        src/fish_tank/asteroid.h
+        src/fish_tank/asteroid.cpp
 )
 target_link_libraries(fish_tank ppgso shaders)
 install(TARGETS fish_tank DESTINATION .)
